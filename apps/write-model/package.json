@@ -20,9 +20,20 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@nestjs/common": "^9.0.0",
-    "@nestjs/core": "^9.0.0",
-    "@nestjs/platform-express": "^9.0.0",
+    "@apollo/server": "^4.7.1",
+    "@nestjs/apollo": "^11.0.5",
+    "@nestjs/common": "^9.4.0",
+    "@nestjs/core": "^9.4.0",
+    "@nestjs/graphql": "^11.0.5",
+    "@nestjs/microservices": "^9.4.0",
+    "@nestjs/mongoose": "^9.2.2",
+    "@nestjs/platform-express": "^9.4.0",
+    "amqp-connection-manager": "^4.1.13",
+    "amqplib": "^0.10.3",
+    "dotenv": "^16.0.3",
+    "graphql": "^16.6.0",
+    "mongoose": "^7.1.0",
+    "reducer": "workspace:*",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0"
   },
@@ -46,9 +57,9 @@
     "ts-jest": "29.0.3",
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
+    "tsconfig": "workspace:*",
     "tsconfig-paths": "4.1.1",
-    "typescript": "^4.7.4",
-    "tsconfig": "workspace:*"
+    "typescript": "^4.7.4"
   },
   "jest": {
     "moduleFileExtensions": [

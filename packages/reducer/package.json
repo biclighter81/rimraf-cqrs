@@ -1,0 +1,14 @@
+{
+  "name": "reducer",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dist/index",
+  "types": "./dist/index",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc --build --force tsconfig.json"
+  },
+  "dependencies": {
+    "@types/node": "18.11.18"
+  }
+}

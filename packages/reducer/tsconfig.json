@@ -1,0 +1,8 @@
+{
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*"]
+}
