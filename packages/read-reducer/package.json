@@ -1,5 +1,5 @@
 {
-  "name": "reducer",
+  "name": "read-reducer",
   "version": "0.0.0",
   "private": true,
   "main": "./dist/index",
@@ -9,6 +9,7 @@
     "build": "tsc --build --force tsconfig.json"
   },
   "dependencies": {
-    "@types/node": "18.11.18"
+    "@types/node": "18.11.18",
+    "types": "workspace:*"
   }
 }

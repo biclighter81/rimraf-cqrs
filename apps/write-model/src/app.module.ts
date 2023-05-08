@@ -6,8 +6,6 @@ import { AppResolver } from './app.resolver';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ExampleModule } from './example/example.module';
 import * as dotenv from 'dotenv';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { MqttService } from './mqtt/mqtt.service';
 import { MqttModule } from './mqtt/mqtt.module';
 dotenv.config();
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { Event } from 'types';
 import * as amqp from 'amqplib';
-import { Event } from '../app.service';
 
 @Injectable()
 export class MqttService {
@@ -34,6 +34,7 @@ export class MqttService {
       this.exchange,
       event.name,
       Buffer.from(JSON.stringify(event)),
+      { persistent: true },
     );
   }
 }

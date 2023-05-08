@@ -1,11 +1,15 @@
-export type Reducer<TEventDef, TState> = {
+import { Field, ObjectType, Int, ID } from '@nestjs/graphql';
 
-    [K in keyof TEventDef]?: (
+@ObjectType()
+export class CommandResponse {
+  @Field((type) => ID, { nullable: true })
+  id?: string;
+  @Field()
+  name: string;
 
-        payload: TEventDef[K],
+  @Field((type) => Int)
+  statusCode: number;
 
-        state: Readonly<TState>
-
-    ) => Readonly<TState>;
-
+  @Field({ nullable: true })
+  errorMessage?: string;
 }

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppService } from './app.service';
+import { AppResolver } from './app.resolver';
+import * as dotenv from 'dotenv';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppResolver } from './app.resolver';
 import { ExampleModule } from './example/example.module';
-import * as dotenv from 'dotenv';
 dotenv.config();
 
 @Module({

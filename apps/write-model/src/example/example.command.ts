@@ -1,15 +1,13 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { CommandResponse } from '../lib/command-res.model';
 import { ExampleNotFoundError } from './example.errors';
 import { AppService } from '../app.service';
 import {
-  Example,
   ExampleCreatedInput,
-  ExampleEvents,
   ExampleTextChangedInput,
   exampleReducer,
 } from './example';
-
+import { CommandResponse } from '../lib/types';
+import { ExampleEvents, Example } from 'types';
 @Resolver()
 export class ExampleCommands {
   constructor(private readonly writeSrv: AppService) {}
@@ -23,7 +21,7 @@ export class ExampleCommands {
         'Example',
         'ExampleCreated',
       )({
-        name: 'test',
+        name: payload.name,
       });
       return {
         name: 'CreateExample',

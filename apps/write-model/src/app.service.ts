@@ -1,16 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { Reducer } from './lib/types';
 import { randomUUID } from 'crypto';
 import { MqttService } from './mqtt/mqtt.service';
-
-export type Event<T> = {
-  payload: T;
-  name: string;
-  timestamp: number;
-  id: string;
-};
+import { Event, Reducer } from 'types';
 
 @Injectable()
 export class AppService {

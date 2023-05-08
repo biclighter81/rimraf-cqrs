@@ -14,12 +14,20 @@ export class MqttService {
   private channel: amqp.Channel;
   private exchange: string = 'rimraf-cqrs';
   private queue: string = 'event-queue';
+  private subscriptions: {
+    [key: string]: {
+      callback: (event: any, ack: () => void) => void;
+    }[];
+  } = {};
 
   constructor() {
     this.connect();
   }
 
   private async connect() {
+    if (this.connection && this.channel) {
+      return;
+    }
     this.connection = await amqp.connect({
       hostname: process.env.MQTT_HOST,
       port: parseInt(process.env.MQTT_PORT),
@@ -27,34 +35,47 @@ export class MqttService {
       password: process.env.MQTT_PASSWORD,
     });
     this.channel = await this.connection.createChannel();
-    await this.channel.assertExchange(this.exchange, 'direct', {
-      durable: true,
-    });
-    await this.channel.assertQueue(this.queue, {
-      durable: true,
-    });
   }
 
-  async publish<T, R extends keyof T>(event: Event<T[R]>) {
-    await this.channel.publish(
-      this.exchange,
-      event.name,
-      Buffer.from(JSON.stringify(event)),
-    );
-  }
+  async publish<T, R extends keyof T>(event: Event<T[R]>) {}
 
   async subscribe<T, R extends keyof T>(
     eventName: R & string,
-    callback: (event: Event<T[R]>) => void,
+    callback: (event: Event<T[R]>, ack: () => void) => void,
   ) {
-    await this.channel.bindQueue(this.queue, this.exchange, eventName);
-    await this.channel.consume(
-      this.queue,
-      (msg) => {
-        const event = JSON.parse(msg.content.toString());
-        callback(event);
-      },
-      { noAck: true },
-    );
+    await this.connect();
+    if (!this.subscriptions[eventName]) {
+      this.subscriptions[eventName] = [];
+      await this.channel.assertExchange(this.exchange, 'direct', {
+        durable: true,
+      });
+      const queue = await this.channel.assertQueue(this.queue, {
+        durable: true,
+      });
+      await this.channel.bindQueue(queue.queue, eventName, eventName);
+
+      //add callback function to subscriptions before consuming
+      this.subscriptions[eventName].push({ callback });
+
+      await this.channel.consume(
+        queue.queue,
+        async (msg) => {
+          const routingKey = msg.fields.routingKey;
+          const subscribers = this.subscriptions[routingKey];
+          if (subscribers) {
+            const event = JSON.parse(msg.content.toString());
+            for (const subscriber of subscribers) {
+              subscriber.callback(event, () => {
+                this.channel.ack(msg);
+              });
+            }
+          }
+        },
+        { noAck: false },
+      );
+    } else {
+      //already consuming, just add callback function to subscriptions
+      this.subscriptions[eventName].push({ callback });
+    }
   }
 }
