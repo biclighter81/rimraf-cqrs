@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ExampleModule } from './example/example.module';
 import * as dotenv from 'dotenv';
 import { MqttModule } from './mqtt/mqtt.module';
+import { GraphQLError } from 'graphql';
 dotenv.config();
 
 @Module({
@@ -15,6 +16,13 @@ dotenv.config();
       driver: ApolloDriver,
       installSubscriptionHandlers: true,
       autoSchemaFile: true,
+      formatError: (error: GraphQLError) => {
+        const graphQLFormattedError = {
+          message: error.message,
+          code: error.extensions.code,
+        };
+        return graphQLFormattedError;
+      },
     }),
     MongooseModule.forRoot(process.env.MONGODB_URL, {
       dbName: process.env.MONGODB_DB,

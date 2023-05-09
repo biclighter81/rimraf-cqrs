@@ -6,10 +6,6 @@ export class CommandResponse {
   id?: string;
   @Field()
   name: string;
-
-  @Field((type) => Int)
-  statusCode: number;
-
   @Field({ nullable: true })
   errorMessage?: string;
 }

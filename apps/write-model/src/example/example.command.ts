@@ -8,6 +8,7 @@ import {
 } from './example';
 import { CommandResponse } from '../lib/types';
 import { ExampleEvents, Example } from 'types';
+import { GraphQLError } from 'graphql';
 @Resolver()
 export class ExampleCommands {
   constructor(private readonly writeSrv: AppService) {}
@@ -25,16 +26,11 @@ export class ExampleCommands {
       });
       return {
         name: 'CreateExample',
-        statusCode: 200,
         id,
       };
     } catch (e) {
       console.log(e);
-      return {
-        name: 'CreateExample',
-        errorMessage: 'Error creating ExampleEvent',
-        statusCode: 500,
-      };
+      throw new GraphQLError('Error creating ExampleEvent');
     }
   }
 
@@ -42,9 +38,6 @@ export class ExampleCommands {
   async setExampleText(
     @Args('payload') payload: ExampleTextChangedInput,
   ): Promise<CommandResponse> {
-    let cres = {
-      name: 'SetExampleText',
-    };
     try {
       const state = await this.writeSrv.getState<ExampleEvents, Example>(
         'Example',
@@ -59,24 +52,17 @@ export class ExampleCommands {
         ...payload,
       });
       return {
-        ...cres,
-        statusCode: 200,
+        name: 'SetExampleText',
         id: payload.id,
       };
     } catch (e) {
       if (e instanceof ExampleNotFoundError) {
-        return {
-          ...cres,
-          errorMessage: e.message,
-          statusCode: 404,
-        };
+        throw new GraphQLError('Example not found', {
+          extensions: { code: 'NOT_FOUND' },
+        });
       }
       console.log(e);
-      return {
-        ...cres,
-        errorMessage: 'Error creating ExampleEvent',
-        statusCode: 500,
-      };
+      throw new GraphQLError('Error setting Example text');
     }
   }
 }
