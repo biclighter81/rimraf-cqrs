@@ -6,6 +6,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ExampleModule } from './example/example.module';
+import { GraphQLError, GraphQLFormattedError } from 'graphql';
 dotenv.config();
 
 @Module({
@@ -14,6 +15,13 @@ dotenv.config();
       driver: ApolloDriver,
       installSubscriptionHandlers: true,
       autoSchemaFile: true,
+      formatError: (error: GraphQLError) => {
+        const graphQLFormattedError = {
+          message: error.message,
+          code: error.extensions.code,
+        };
+        return graphQLFormattedError;
+      },
     }),
     MongooseModule.forRoot(process.env.MONGODB_URL, {
       dbName: process.env.MONGODB_DB,

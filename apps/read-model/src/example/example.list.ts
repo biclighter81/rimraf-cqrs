@@ -51,6 +51,6 @@ export class ExampleListService implements OnModuleInit {
   }
 
   async example(id: string) {
-    return { example: await this.exampleListModel.findOne({ id }) };
+    return await this.exampleListModel.findOne({ id: id });
   }
 }
