@@ -1,0 +1,9 @@
+{
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES5",
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*"]
+}

@@ -1,4 +1,7 @@
 # Turborepo starter
+kubectl port-forward svc/postgres-postgresql 5432:5432
+kubectl port-forward svc/mongo-mongodb 27017:27017
+kubectl port-forward svc/rabbitmq 5672:5672
 
 This is an official starter Turborepo.
 

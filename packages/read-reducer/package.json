@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@types/node": "18.11.18",
-    "types": "workspace:*"
+    "types": "workspace:*",
+    "rimraf-cqrs-lib": "workspace:*"
   }
 }

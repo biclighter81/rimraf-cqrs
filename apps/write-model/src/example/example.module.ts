@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ExampleCommands } from './example.command';
 import { AppService } from '../app.service';
-import { MqttModule } from '../mqtt/mqtt.module';
 
 @Module({
-  imports: [MqttModule],
+  imports: [],
   providers: [AppService, ExampleCommands],
 })
-export class ExampleModule {}
+export class ExampleModule { }

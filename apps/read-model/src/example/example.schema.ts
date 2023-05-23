@@ -19,12 +19,12 @@ export const ExampleListSchema = SchemaFactory.createForClass(ExampleList);
 
 //gql
 
-@ObjectType()
-export class ExampleListModel {
-  @Field((type) => String)
-  id: string;
-  @Field((type) => String)
-  name: string;
-  @Field((type) => String)
-  text: string;
-}
+// @ObjectType()
+// export class ExampleListModel {
+//   @Field((type) => String)
+//   id: string;
+//   @Field((type) => String)
+//   name: string;
+//   @Field((type) => String)
+//   text: string;
+// }

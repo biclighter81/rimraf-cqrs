@@ -1,5 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { ExampleEvents, Example, Reducer } from 'types';
+import { Reducer } from 'rimraf-cqrs-lib';
+import { ExampleEvents, Example } from 'types';
 
 export const exampleReducer: Reducer<ExampleEvents, Example> = {
   ExampleCreated: (payload, state) => {

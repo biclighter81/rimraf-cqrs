@@ -1,6 +1,6 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { ExampleNotFoundError } from './example.errors';
-import { AppService } from '../app.service';
+
 import {
   ExampleCreatedInput,
   ExampleTextChangedInput,
@@ -9,19 +9,25 @@ import {
 import { CommandResponse } from '../lib/types';
 import { ExampleEvents, Example } from 'types';
 import { GraphQLError } from 'graphql';
+import { IAggregatRepository } from 'rimraf-cqrs-lib';
+import { AppService } from '../app.service';
 @Resolver()
 export class ExampleCommands {
-  constructor(private readonly writeSrv: AppService) {}
+  constructor(private readonly writeSrv: AppService) { }
 
   @Mutation((returns) => CommandResponse)
   async createExample(
     @Args('payload') payload: ExampleCreatedInput,
   ): Promise<CommandResponse> {
     try {
-      const id = await this.writeSrv.save<ExampleEvents>(
+      /* const id = await this.writeSrv.save<ExampleEvents>(
         'Example',
         'ExampleCreated',
       )({
+        name: payload.name,
+      }); */
+      
+      const id = await this.writeSrv.Example.save('ExampleCreated')({
         name: payload.name,
       });
       return {
@@ -39,16 +45,14 @@ export class ExampleCommands {
     @Args('payload') payload: ExampleTextChangedInput,
   ): Promise<CommandResponse> {
     try {
-      const state = await this.writeSrv.getState<ExampleEvents, Example>(
+      /* const state = await this.writeSrv.getState<ExampleEvents, Example>(
         'Example',
         payload.id,
         exampleReducer,
-      );
+      ); */
+      const state = await this.writeSrv.Example.getState(payload.id);
       if (!state) throw new ExampleNotFoundError(payload.id);
-      await this.writeSrv.save<ExampleEvents>(
-        'Example',
-        'ExampleTextChanged',
-      )({
+      await this.writeSrv.Example.save('ExampleTextChanged')({
         ...payload,
       });
       return {

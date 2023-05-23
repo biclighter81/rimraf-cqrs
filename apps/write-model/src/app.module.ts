@@ -6,7 +6,6 @@ import { AppResolver } from './app.resolver';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ExampleModule } from './example/example.module';
 import * as dotenv from 'dotenv';
-import { MqttModule } from './mqtt/mqtt.module';
 import { GraphQLError } from 'graphql';
 dotenv.config();
 
@@ -28,7 +27,6 @@ dotenv.config();
       dbName: process.env.MONGODB_DB,
     }),
     ExampleModule,
-    MqttModule,
   ],
   controllers: [],
   providers: [AppService, AppResolver],
