@@ -36,10 +36,10 @@
     "dotenv": "^16.0.3",
     "graphql": "^16.6.0",
     "mongoose": "^7.1.0",
-    "types": "workspace:*",
     "reflect-metadata": "^0.1.13",
+    "rimraf-cqrs-lib": "workspace:*",
     "rxjs": "^7.2.0",
-    "rimraf-cqrs-lib": "workspace:*"
+    "types": "workspace:*"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

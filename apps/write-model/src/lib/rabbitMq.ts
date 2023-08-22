@@ -1,4 +1,5 @@
 
+import { Logger } from '@nestjs/common';
 import * as amqp from 'amqplib';
 import { Event } from 'rimraf-cqrs-lib';
 
@@ -12,16 +13,20 @@ export const rabbitMqServer = async () => {
 
     const channel = await connection.createChannel();
 
-    const aggChannel = {} as { [aggName: string]: () => void }
+    const aggChannel = {} as { [aggName: string]: (params: Event<unknown> ) => void }
 
     return async (aggName: string, event: Event<unknown>) => {
-        if (aggChannel[aggName] === undefined) {
+        
+        const logger = new Logger("amqp publisher " + aggName);
+
+        if (aggChannel[aggName] === undefined) { 
             await channel.assertExchange(aggName, "fanout", { durable: true });
-            aggChannel[aggName] = () => {
-                channel.publish(aggName, event.eventName, Buffer.from(JSON.stringify(event)), { persistent: true });
+            aggChannel[aggName] = (params: Event<unknown>) => {
+                logger.debug(params);
+                channel.publish(aggName, params.eventName, Buffer.from(JSON.stringify(params)), { persistent: true });
             }
         }
-        const publish = aggChannel[aggName];
-        publish();
+        const publish = aggChannel[aggName]; 
+        publish(event);
     }
 }

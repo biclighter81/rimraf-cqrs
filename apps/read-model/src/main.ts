@@ -10,12 +10,12 @@ export class GraphQLExceptionFilter implements ExceptionFilter {
     }
   }
 }
-
+ 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new GraphQLExceptionFilter());
   app.enableCors();
-  await app.listen(4000);
+  await app.listen(process.env.port||4000);
 }
 bootstrap();

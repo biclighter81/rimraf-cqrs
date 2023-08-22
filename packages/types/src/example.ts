@@ -4,10 +4,12 @@ export interface Example {
 }
 
 export interface ExampleCreated {
+  id: string;
   name: string;
 }
 
 export interface ExampleTextChanged {
+  id: string;
   text: string;
 }
 

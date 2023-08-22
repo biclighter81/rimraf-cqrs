@@ -11,6 +11,7 @@ import { ExampleEvents, Example } from 'types';
 import { GraphQLError } from 'graphql';
 import { IAggregatRepository } from 'rimraf-cqrs-lib';
 import { AppService } from '../app.service';
+import { randomUUID } from 'crypto';
 @Resolver()
 export class ExampleCommands {
   constructor(private readonly writeSrv: AppService) { }
@@ -26,8 +27,11 @@ export class ExampleCommands {
       )({
         name: payload.name,
       }); */
-      
-      const id = await this.writeSrv.Example.save('ExampleCreated')({
+
+      const id = randomUUID();
+
+      await this.writeSrv.Example.save('ExampleCreated')({
+        id: id,
         name: payload.name,
       });
       return {

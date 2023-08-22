@@ -23,7 +23,7 @@ dotenv.config();
         return graphQLFormattedError;
       },
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URL, {
+    MongooseModule.forRoot(process.env.MONGODB_URL as string, {
       dbName: process.env.MONGODB_DB,
     }),
     ExampleModule,

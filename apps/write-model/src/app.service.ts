@@ -15,16 +15,16 @@ export class AppService {
     const rabbitConnection = rabbitMqServer();
 
     const factory = writeRepositoryFactory({
-      load:async (id, aggName) =>{
+      load: async (id, aggName) => {
         const collection = this.connection.collection(aggName);
         const data = collection.find({ id }).toArray();
         return data as any;
       },
-       insertEvent:async(event, aggName) =>{
+      insertEvent: async (event, aggName) => {
         const collection = this.connection.collection(aggName);
         await collection.insertOne(event);
         const server = await rabbitConnection;
-        console.log(event);
+        //console.log(event);
         await server(aggName, event);
       },
     });

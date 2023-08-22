@@ -16,6 +16,9 @@ export type Event<T> = {
   id: string;
 };
 
+export interface EventHandlerFunc<TEvents, TReturn> {
+  <R extends keyof TEvents>(eventName: keyof TEvents & string): (payload: TEvents[R] & { id?: string }) => TReturn
+}
 
 export interface IAggregatRepository<TEvents, TAgg> {
   /**
@@ -23,7 +26,7 @@ export interface IAggregatRepository<TEvents, TAgg> {
    * @param aggName 
    * @param eventName 
    */
-  save: <R extends keyof TEvents>(eventName: keyof TEvents & string) => (payload: TEvents[R] & { id?: string }) => Promise<string>;
+  save: EventHandlerFunc<TEvents, Promise<string>>;
   getState(
     id: string
   ): Promise<Readonly<TAgg>>

@@ -7,6 +7,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
 import { ListModule } from './list.module';
+
 dotenv.config();
 
 @Module({
@@ -23,10 +24,7 @@ dotenv.config();
         return graphQLFormattedError;
       },
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URL, {
-      dbName: process.env.MONGODB_DB,
-    }),
-    ListModule,
+    ListModule
   ],
   controllers: [],
   providers: [AppService, AppResolver],

@@ -1,7 +1,6 @@
 
 import * as amqp from 'amqplib';
 import * as dotenv from 'dotenv';
-import { exit } from 'process';
 dotenv.config();
 
 (async () => {
