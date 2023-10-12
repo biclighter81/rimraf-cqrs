@@ -42,7 +42,7 @@ export default function MyListComponent() {
     }
     interface ExampleCreatedInput { name: string }
 
-    const createExample = (payload: ExampleCreatedInput) => {
+    const createExample = (payload: ExampleCreatedInput):Promise<string> => {
         const document = `
         mutation ($payload: ExampleCreatedInput!) {
             createExample(payload: $payload) {
@@ -61,6 +61,7 @@ export default function MyListComponent() {
                 console.error(err);
             else
                 throw err;
+            return ""
         })
     }
     const add = async () => {

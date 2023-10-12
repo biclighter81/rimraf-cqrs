@@ -21,12 +21,25 @@ var typeMap = {
     "Float": "number",
     "Int": "number"
 };
-var plugin = function (schema, documents, config) {
+var plugin = function (schema, documents, config, info) {
+    if (!config.url) {
+        throw new Error("You must specify \"url\" in my plugin configuration!");
+    }
     var astNode = (0, plugin_helpers_1.getCachedDocumentNodeFromSchema)(schema);
-    //const n = { ...astNode, definitions: [astNode.definitions[1]] };
     var nonUserTypes;
     var mutationFunc = function (node) {
-        return node;
+        var _a;
+        return (_a = node.fields) === null || _a === void 0 ? void 0 : _a.map(function (p) { return "export const " + p; }).join('\n');
+    };
+    var fieldFunc = function (node) {
+        if ("nullabel" in node.type && "typeName" in node.type) {
+            return node.name.value + (node.type.nullabel ? "" : "?") + ": " + node.type.typeName;
+        }
+    };
+    var getTyp = function (type) {
+        if ("nullabel" in type && "typeName" in type) {
+            return type.typeName;
+        }
     };
     var result = (0, graphql_1.visit)(astNode, {
         "SchemaDefinition": function (node) {
@@ -40,7 +53,7 @@ var plugin = function (schema, documents, config) {
                     return mutationFunc(node);
                 if (nonUserTypes.some(function (p) { return p.type.name.value == node.name.value; }))
                     return null;
-                return "interface ".concat(node.name.value, "{\n\t").concat((_a = node.fields) === null || _a === void 0 ? void 0 : _a.join(';\n\t'), "\n}");
+                return "export interface ".concat(node.name.value, "{\n\t").concat((_a = node.fields) === null || _a === void 0 ? void 0 : _a.join(';\n\t'), "\n}");
             }
         },
         "NamedType": {
@@ -59,26 +72,29 @@ var plugin = function (schema, documents, config) {
         },
         "FieldDefinition": {
             leave: function (node) {
+                if (node.arguments !== undefined && node.arguments.length > 0) {
+                    return "".concat(node.name.value, " = (").concat(node.arguments.map(fieldFunc), ") => {\n            const document = `\n        mutation (").concat(node.arguments.map(function (p) { return "$" + fieldFunc(p) + "!"; }).join(','), ") {\n          ").concat(node.name.value, "(").concat(node.arguments.map(function (p) { return "$" + p.name.value; }).join(','), ") {\n              id\n              errorMessage\n            }\n          }          \n        `\n        return request<{ ").concat(node.name.value, ": ").concat(getTyp(node.type), " }>('").concat(config.url, "', document, { payload }).then(p => {\n            const response = p.").concat(node.name.value, ";\n            if (response.errorMessage)\n                throw response.errorMessage\n            return response.id\n        }).catch(err => {\n            if (err instanceof Error)\n                console.error(err);\n            else\n                throw err;\n            return \"\"\n        })\n          }");
+                }
                 if ("nullabel" in node.type && "typeName" in node.type) {
                     return node.name.value + (node.type.nullabel ? "" : "?") + ": " + node.type.typeName;
                 }
             }
         },
-        "InputValueDefinition": {
-            leave: function (node) {
-                if ("nullabel" in node.type && "typeName" in node.type) {
-                    return node.name.value + (node.type.nullabel ? "" : "?") + ": " + node.type.typeName;
-                }
-            }
-        },
+        // "InputValueDefinition": {
+        //   leave: (node) => {
+        //     if ("nullabel" in node.type && "typeName" in node.type) {
+        //       return node.name.value + (node.type.nullabel ? "" : "?") + ": " + node.type.typeName;
+        //     }
+        //   }
+        // },
         "InputObjectTypeDefinition": {
             leave: function (node) {
-                var _a;
-                return "interface ".concat(node.name.value, "{\n\t").concat((_a = node.fields) === null || _a === void 0 ? void 0 : _a.join(';\n\t'), "\n}");
+                var _a, _b;
+                return "interface ".concat(node.name.value, "{\n\t").concat((_b = (_a = node.fields) === null || _a === void 0 ? void 0 : _a.map(fieldFunc)) === null || _b === void 0 ? void 0 : _b.join(';\n\t'), "\n}");
             }
         }
     });
-    return result.definitions.filter(function (p) { return typeof p === "string"; }).join('\n');
+    return "\n  import { request } from 'graphql-request';\n\n  ".concat(result.definitions.filter(function (p) { return typeof p === "string"; }).join('\n'), "\n  ");
 };
 exports.plugin = plugin;
 //# sourceMappingURL=index.js.map
