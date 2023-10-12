@@ -19,7 +19,7 @@ interface ExampleTextChangedInput{
 export const createExample = (payload: ExampleCreatedInput) => {
             const document = `
         mutation ($payload: ExampleCreatedInput!) {
-          createExample($payload) {
+          createExample(payload:$payload) {
               id
               errorMessage
             }
@@ -41,7 +41,7 @@ export const createExample = (payload: ExampleCreatedInput) => {
 export const deleteExample = (payload: ExampleDeleted) => {
             const document = `
         mutation ($payload: ExampleDeleted!) {
-          deleteExample($payload) {
+          deleteExample(payload:$payload) {
               id
               errorMessage
             }
@@ -63,7 +63,7 @@ export const deleteExample = (payload: ExampleDeleted) => {
 export const setExampleText = (payload: ExampleTextChangedInput) => {
             const document = `
         mutation ($payload: ExampleTextChangedInput!) {
-          setExampleText($payload) {
+          setExampleText(payload:$payload) {
               id
               errorMessage
             }

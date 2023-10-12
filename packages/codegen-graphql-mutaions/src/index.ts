@@ -80,7 +80,7 @@ export const plugin: PluginFunction = (
           return `${node.name.value} = (${node.arguments.map(fieldFunc)}) => {
             const document = \`
         mutation (${node.arguments.map(p => "$" + fieldFunc(p) + "!").join(',')}) {
-          ${node.name.value}(${node.arguments.map(p => "$" + p.name.value).join(',')}) {
+          ${node.name.value}(${node.arguments.map(p => p.name.value +":$" + p.name.value).join(',')}) {
               id
               errorMessage
             }

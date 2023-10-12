@@ -5,8 +5,9 @@ import { io } from "socket.io-client";
 import { Reducer } from 'rimraf-cqrs-lib';
 import { exampleReducer } from "read-reducer";
 import { request } from 'graphql-request'
+import { createExample, deleteExample, setExampleText } from "@/commands";
 
-const useReadModel = <T extends any[],>(listName: string, aggReducer: Reducer<any, T>) => {
+const createUseReadModel = (url: string) => <T extends any[],>(listName: string, aggReducer: Reducer<any, T>) => {
     const [state, setState] = useState<T>([] as any)
 
     useEffect(() => {
@@ -33,59 +34,57 @@ const useReadModel = <T extends any[],>(listName: string, aggReducer: Reducer<an
     return state;
 }
 
+const useReadModel = createUseReadModel("http://localhost:4000/")
 export default function MyListComponent() {
     const mylist = useReadModel("MyList", exampleReducer)
+    const [state, setState] = useState({ name: "sty", editId: "", editText: "" });
 
-    interface Rspo {
-        id: string,
-        errorMessage: string
-    }
-    interface ExampleCreatedInput { name: string }
-
-    const createExample = (payload: ExampleCreatedInput):Promise<string> => {
-        const document = `
-        mutation ($payload: ExampleCreatedInput!) {
-            createExample(payload: $payload) {
-              id
-              errorMessage
-            }
-          }          
-        `
-        return request<{ createExample: Rspo }>('http://localhost:3002/graphql', document, { payload }).then(p => {
-            const response = p.createExample;
-            if (response.errorMessage)
-                throw response.errorMessage
-            return response.id
-        }).catch(err => {
-            if (err instanceof Error)
-                console.error(err);
-            else
-                throw err;
-            return ""
-        })
-    }
     const add = async () => {
         try {
-            await createExample({ name: "sty" });
+            await createExample({ name: state.name });
         }
         catch (err) {
             debugger;
         }
 
-        //         const document = `
-        //         mutation ($payload: ExampleCreatedInput!) {
-        //             createExample(payload: $payload) {
-        //               id
-        //               errorMessage
-        //             }
-        //           }
+    }
 
-        // `
-        //         request('http://localhost:3002/graphql', document, { payload: { name: "sty" } })
+    const save = async () => {
+        try {
+            await setExampleText({ text: state.editText, id: state.editId });
+            setState({ ...state, editId: "", editText: "" })
+        }
+        catch (err) {
+            debugger;
+        }
+
+    }
+
+    const del = async () => {
+        try {
+            await deleteExample({ id: state.editId });
+        }
+        catch (err) {
+            debugger;
+        }
+
     }
 
     return (<div>
+        <input value={state.name} onChange={(e) => setState({ ...state, name: e.target.value })} />
         <button onClick={() => { add() }}> add me</button>
-        {mylist.map(p => <div><span className=" text-xs mr-4">{p.ExampleId}</span><span className=" text-xl">{p.name}</span></div>)}
+        {mylist.map(p => <div key={p.ExampleId} onClick={() => setState({ ...state, editId: p.ExampleId, editText: p.name })}>
+            <span className=" text-xs mr-4">{p.ExampleId}</span>
+            {state.editId == p.ExampleId ?
+                <>
+                    <input value={state.editText} onChange={(e) => setState({ ...state, editText: e.target.value })} />
+                    <button className="m-2" onClick={() => { save() }}> save</button>
+                    <button onClick={() => { del() }}> del</button>
+                </> :
+                <span className=" text-xl">{p.name}</span>
+
+            }
+
+        </div>)}
     </div>)
 }
