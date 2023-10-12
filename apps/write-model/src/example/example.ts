@@ -26,3 +26,9 @@ export class ExampleTextChangedInput {
   @Field()
   id: string;
 }
+
+@InputType()
+export class ExampleDeleted {
+  @Field()
+  id: string;
+}

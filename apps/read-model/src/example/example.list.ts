@@ -3,7 +3,6 @@ import { ExampleList } from './example.schema';
 import { Model } from 'mongoose';
 import { ExampleEvents } from 'types';
 import { PubSub } from 'graphql-subscriptions';
-import { exampleReducer } from 'read-reducer';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 
 @Injectable()

@@ -1,0 +1,20 @@
+{
+  "name": "codegen-graphql-mutations",
+  "version": "5.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "build:dev": "tsc --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/plugin-helpers": "^5.0.1",
+    "graphql": "^16.8.0",
+    "typescript": "^5.2.2"
+  }
+}

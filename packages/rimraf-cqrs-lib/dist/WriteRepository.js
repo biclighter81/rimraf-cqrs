@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.writeRepositoryFactory = void 0;
 var crypto_1 = require("crypto");
 exports.writeRepositoryFactory = function (dao) { return function (reducer, aggName) { return ({
@@ -50,7 +50,7 @@ exports.writeRepositoryFactory = function (dao) { return function (reducer, aggN
                             payload: payload,
                             eventName: eventName,
                             timestamp: new Date().getTime(),
-                            id: id
+                            id: id,
                         };
                         return [4 /*yield*/, dao.insertEvent(event, aggName)];
                     case 1:
@@ -61,7 +61,7 @@ exports.writeRepositoryFactory = function (dao) { return function (reducer, aggN
         }); };
     },
     getState: function (id) { return __awaiter(void 0, void 0, void 0, function () {
-        var events, state, _i, events_1, event_1;
+        var events, state, _i, events_1, event_1, eventFunc;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, dao.load(id, aggName)];
@@ -72,10 +72,12 @@ exports.writeRepositoryFactory = function (dao) { return function (reducer, aggN
                     state = {};
                     for (_i = 0, events_1 = events; _i < events_1.length; _i++) {
                         event_1 = events_1[_i];
-                        state = reducer[event_1.eventName](event_1, state);
+                        eventFunc = reducer[event_1.eventName];
+                        if (eventFunc !== undefined)
+                            state = eventFunc(event_1, state);
                     }
                     return [2 /*return*/, state];
             }
         });
-    }); }
+    }); },
 }); }; };

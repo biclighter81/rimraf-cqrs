@@ -7,6 +7,7 @@ import { relay, relayWorkQueue, amqpChannelProvider } from './lib/rabbitMq';
 import { Event, EventHandlerFunc, Reducer } from 'rimraf-cqrs-lib';
 import { ExampleEvents } from 'types';
 import { Db, MongoClient, ObjectId, WithId, Document } from 'mongodb';
+import { exampleReducer } from 'read-reducer';
 
 const readModelListProvider: Provider = {
   provide: 'ReadModelList',
@@ -59,26 +60,16 @@ const databaseConnection: Provider = {
 })
 export class ListModule { }
 
-//share me:
-export interface MyListDto {
-  ExampleId: string;
-  name: string;
-}
-export const exampleReducer: Reducer<ExampleEvents, MyListDto> = {
-  ExampleCreated: (payload, state) => {
-    return { ...state, ExampleId: payload.id, name: payload.name };
-  },
-  ExampleTextChanged: (payload, state) => {
-    return { ...state, name: payload.text };
-  },
-};
-//end share me
+type ArrayType<T> =
+  T extends (infer U)[]
+  ? U
+  : never
 
 const genericList = (database: Db, listName: string) =>
-  <T extends Document>(listenAggName: string, searchField: keyof T, aggReducer: Reducer<any, T>) =>
+  <T extends any[]>(listenAggName: string, searchField: keyof ArrayType<T>, aggReducer: Reducer<any, T>) =>
     (aggName: string) => {
 
-      const collection = database.collection<T>(listName);
+      const collection = database.collection<ArrayType<T>>(listName);
 
       if (aggName == listenAggName)
         return async (event: Event<unknown>) => {
@@ -87,24 +78,28 @@ const genericList = (database: Db, listName: string) =>
 
           const reducer = aggReducer[event.eventName as any];
           if (reducer !== undefined) {
-            if (currentStateList !== undefined && currentStateList.length > 0)
-              for (const currentState of currentStateList) {
-                const newState = reducer(event.payload as any, currentState as any) as WithId<T>;
-                if (newState != currentState) {
-                  if (newState !== undefined) {
+            const newStateList = reducer(event.payload, currentStateList as any || []) as WithId<ArrayType<T>[]>;
+
+            for (const newState of newStateList) {
+              if (newState._id === undefined)
+                await collection.insertOne(newState as any);
+              else {
+                const oldItem = currentStateList.find(p => p._id == newState._id)
+                if (oldItem === undefined)
+                  throw "geht nicht";
+                else {
+                  if (oldItem !== newState)
                     await collection.updateOne({ _id: new ObjectId(newState._id) } as any, { $set: newState } as any)
-                  }
-                  else {
-                    await collection.deleteOne({ _id: new ObjectId(currentState._id) }as any)
-                  }
                 }
               }
-            else {
-              const newState = reducer(event.payload as any, { _id: new ObjectId() } as any);
-              if (newState !== undefined) {
-                await collection.insertOne(newState as any);
-              }
             }
+
+            for(const existingItem of currentStateList){
+              const oldItem = newStateList.find(p => p._id == existingItem._id);
+              if(oldItem === undefined)
+                await collection.deleteOne({ _id: new ObjectId(existingItem._id) } as any)
+            }
+
 
           }
 
@@ -120,41 +115,6 @@ class MyList implements ReadModelList {
 
   }
   ListName: string = MyList.name;
-  AggregateReducer= genericList(this.database,this.ListName)("Example","ExampleId",exampleReducer)
-  // AggregateReducer = (aggName: string) => {
-  //   if (aggName == "Example")
-  //     return async (event: Event<unknown>) => {
-  //       const collection = this.database.collection<MyListDto>(this.ListName);
-
-  //       const currentStateList = (await collection.find({ ExampleId: event.id }).toArray());
-
-  //       const reducer = exampleReducer[event.eventName as keyof typeof exampleReducer];
-  //       if (reducer !== undefined) {
-  //         if (currentStateList !== undefined && currentStateList.length > 0)
-  //           for (const currentState of currentStateList) {
-  //             const newState = reducer(event.payload as any, currentState) as WithId<MyListDto>;
-  //             if (newState != currentState) {
-  //               if (newState !== undefined) {
-  //                 await collection.updateOne({ _id: new ObjectId(newState._id) }, { $set: newState })
-  //               }
-  //               else {
-  //                 await collection.deleteOne({ _id: new ObjectId(currentState._id) })
-  //               }
-  //             }
-  //           }
-  //         else {
-  //           const newState = reducer(event.payload as any, { _id: new ObjectId() } as any);
-  //           if (newState !== undefined) {
-  //             await collection.insertOne(newState);
-  //           }
-  //         }
-
-  //       }
-
-
-  //       return Promise.resolve()
-  //     }
-  //   return undefined;
-  // };
+  AggregateReducer = genericList(this.database, this.ListName)("Example", "ExampleId", exampleReducer)
 
 }

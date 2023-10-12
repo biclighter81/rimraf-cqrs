@@ -29,7 +29,9 @@ export const writeRepositoryFactory = (dao: {
         if (!events?.length) return null;
         let state: any = {};
         for (const event of events) {
-            state = reducer[event.eventName](event, state);
+            const eventFunc = reducer[event.eventName];
+            if (eventFunc !== undefined)
+                state = eventFunc(event, state);
         }
         return state;
     },

@@ -13,7 +13,12 @@ export interface ExampleTextChanged {
   text: string;
 }
 
+export interface ExampleDeleted {
+  id: string;
+}
+
 export interface ExampleEvents {
   ExampleCreated: ExampleCreated;
   ExampleTextChanged: ExampleTextChanged;
+  ExampleDeleted: ExampleDeleted;
 }

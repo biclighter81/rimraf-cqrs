@@ -5,30 +5,16 @@ import { Server } from "socket.io";
 import { Observable, share } from "rxjs";
 import { Event } from 'rimraf-cqrs-lib';
 import { QueueReducer, ReadModelList } from "./ReadModel";
+import { Db } from "mongodb";
 
-interface MyInterface {
-    id: number;
-    name: string;
-}
-
-const myArray: (MyInterface | undefined)[] = [
-    { id: 1, name: "A" },
-    { id: 2, name: "B" },
-    undefined,
-    { id: 3, name: "C" },
-    undefined
-];
-const filteredArray = myArray.filter((item): item is MyInterface => item !== undefined);
-
-
-
-@WebSocketGateway()
+@WebSocketGateway({ cors: '*' })
 export class ListGateway
     implements OnGatewayInit {
 
     constructor(
         @Inject('ReadModelList') private lists: ReadModelList[],
         @Inject('EventBus') private eventBus: { [aggName: string]: Observable<Event<unknown>> },
+        @Inject('ReadDataseConnection') private database: Db
     ) {
         this.logger.log(lists.map(p => `${p.ListName}`).join(","));
     }
@@ -50,17 +36,27 @@ export class ListGateway
                     reducer: list.AggregateReducer(aggName)
                 }))
                 .filter((item) => item.reducer !== undefined)
-                .map(p => p.aggName)
+                .map(p => p.aggName);
 
 
             listsHandler.forEach(
                 aggName => this.eventBus[aggName].subscribe(
                     event => {
                         //this.logger.debug(event);
-                        websocket.emit(event.eventName, event.payload)
+                        websocket.emit("event", event)
                     }
                 )
             )
+
+
+            const collection = this.database.collection(list.ListName);
+            websocket.on("connection", (socket) => {
+                this.logger.debug("client connect for list " + list.ListName);
+                collection.find().toArray().then(currentStateList => {
+                    socket.emit("initState", currentStateList)
+                })
+            })
+
         }
     }
 
