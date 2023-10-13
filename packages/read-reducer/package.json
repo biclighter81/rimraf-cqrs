@@ -9,8 +9,8 @@
     "build": "tsc --build --force tsconfig.json"
   },
   "dependencies": {
-    "@types/node": "18.11.18",
-    "types": "workspace:*",
-    "rimraf-cqrs-lib": "workspace:*"
+    "@types/node": "20.8.5",
+    "rimraf-cqrs-lib": "workspace:*",
+    "types": "workspace:*"
   }
 }

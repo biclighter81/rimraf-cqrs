@@ -9,6 +9,6 @@
     "build": "tsc --build --force tsconfig.json"
   },
   "dependencies": {
-    "@types/node": "18.11.18"
+    "@types/node": "20.8.5"
   }
 }

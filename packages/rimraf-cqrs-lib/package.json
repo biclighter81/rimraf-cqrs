@@ -8,9 +8,9 @@
   "types": "./src/index.ts",
   "type": "commonjs",
   "scripts": {
-    "build":"tsc"
+    "build": "tsc"
   },
   "dependencies": {
-    "@types/node": "18.11.18"
+    "@types/node": "20.8.5"
   }
 }
