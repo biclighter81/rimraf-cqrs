@@ -5,12 +5,9 @@ import {
   ExampleCreatedInput,
   ExampleDeleted,
   ExampleTextChangedInput,
-  exampleReducer,
 } from './example';
 import { CommandResponse } from '../lib/types';
-import { ExampleEvents, Example } from 'types';
 import { GraphQLError } from 'graphql';
-import { IAggregatRepository } from 'rimraf-cqrs-lib';
 import { AppService } from '../app.service';
 import { randomUUID } from 'crypto';
 @Resolver()

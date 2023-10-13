@@ -1,0 +1,24 @@
+type CommandResponse {
+  id: ID!
+  name: String
+  errorMessage: String
+}
+
+input BuildArticle{
+    articleId: ID!
+    name: String!
+}
+
+input ArticleReadyForSale{
+    articleId: ID!
+    price: Int!
+}
+
+type Mutation {
+  buildArticle(payload: BuildArticle!): CommandResponse!
+  articleReadyForSale(payload: ArticleReadyForSale!): CommandResponse!
+}
+
+type Query {
+  healthCheck: String!
+}

@@ -7,14 +7,20 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ExampleModule } from './example/example.module';
 import * as dotenv from 'dotenv';
 import { GraphQLError } from 'graphql';
+import { join } from 'path';
 dotenv.config();
 
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      installSubscriptionHandlers: true,
-      autoSchemaFile: true,
+      //installSubscriptionHandlers: true,
+      //autoSchemaFile: true,
+      typePaths: ['./**/*.graphql'],
+      // definitions: {
+      //   path: join(process.cwd(), 'src/graphql.ts'),
+      //   outputAs: 'class',
+      // },      
       formatError: (error: GraphQLError) => {
         const graphQLFormattedError = {
           message: error.message,
@@ -26,9 +32,9 @@ dotenv.config();
     MongooseModule.forRoot(process.env.MONGODB_URL as string, {
       dbName: process.env.MONGODB_DB,
     }),
-    ExampleModule,
+    //ExampleModule,
   ],
   controllers: [],
   providers: [AppService, AppResolver],
 })
-export class AppModule {}
+export class AppModule { }
