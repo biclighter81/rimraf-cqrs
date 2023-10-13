@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "codegen": "ts-node generate-typings.ts",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -39,7 +40,8 @@
     "reflect-metadata": "^0.1.13",
     "rimraf-cqrs-lib": "workspace:*",
     "rxjs": "^7.8.1",
-    "types": "workspace:*"
+    "types": "workspace:*",
+    "ts-morph": "19.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.1.18",

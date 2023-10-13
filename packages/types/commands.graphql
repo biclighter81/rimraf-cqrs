@@ -19,6 +19,6 @@ type Mutation {
   articleReadyForSale(payload: ArticleReadyForSale!): CommandResponse!
 }
 
-type Query {
-  healthCheck: String!
-}
+#type Query {
+#  healthCheck: String!
+#}
