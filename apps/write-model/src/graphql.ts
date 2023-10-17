@@ -8,25 +8,26 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export interface BuildArticle {
+export class BuildArticle {
     articleId: string;
     name: string;
 }
 
-export interface ArticleReadyForSale {
+export class ArticleReadyForSale {
     articleId: string;
     price: number;
 }
 
-export interface CommandResponse {
+export class CommandResponse {
     id: string;
     name?: Nullable<string>;
     errorMessage?: Nullable<string>;
 }
 
-export interface IMutation {
-    buildArticle(payload: BuildArticle): CommandResponse | Promise<CommandResponse>;
-    articleReadyForSale(payload: ArticleReadyForSale): CommandResponse | Promise<CommandResponse>;
+export abstract class IMutation {
+    abstract buildArticle(payload: BuildArticle): CommandResponse | Promise<CommandResponse>;
+
+    abstract articleReadyForSale(payload: ArticleReadyForSale): CommandResponse | Promise<CommandResponse>;
 }
 
 type Nullable<T> = T | null;

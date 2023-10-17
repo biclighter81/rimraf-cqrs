@@ -94,7 +94,7 @@ var plugin = function (schema, documents, config, info) {
             }
         }
     });
-    return "\n  import { request } from 'graphql-request';\n\n  ".concat(result.definitions.filter(function (p) { return typeof p === "string"; }).join('\n'), "\n  ");
+    return "\n/*\n * -------------------------------------------------------\n * THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)\n * -------------------------------------------------------\n */\n\n/* tslint:disable */\n/* eslint-disable */\n  import { request } from 'graphql-request';\n\n  ".concat(result.definitions.filter(function (p) { return typeof p === "string"; }).join('\n'), "\n  ");
 };
 exports.plugin = plugin;
 //# sourceMappingURL=index.js.map

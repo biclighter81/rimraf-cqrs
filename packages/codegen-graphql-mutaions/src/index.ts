@@ -121,6 +121,14 @@ export const plugin: PluginFunction = (
 
 
   return `
+/*
+ * -------------------------------------------------------
+ * THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+ * -------------------------------------------------------
+ */
+
+/* tslint:disable */
+/* eslint-disable */
   import { request } from 'graphql-request';
 
   ${result.definitions.filter(p => typeof p === "string").join('\n')}
