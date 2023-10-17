@@ -25,9 +25,8 @@ export class CommandResponse {
 }
 
 export abstract class IMutation {
-    abstract buildArticle(payload: BuildArticle): CommandResponse | Promise<CommandResponse>;
-
-    abstract articleReadyForSale(payload: ArticleReadyForSale): CommandResponse | Promise<CommandResponse>;
+    buildArticle?: CommandResponse;
+    articleReadyForSale?: CommandResponse;
 }
 
 type Nullable<T> = T | null;
