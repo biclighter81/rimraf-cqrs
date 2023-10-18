@@ -381,6 +381,49 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
 
+  apps/write-model-v2:
+    dependencies:
+      '@apollo/server':
+        specifier: ^4.9.4
+        version: 4.9.4(graphql@16.8.1)
+      '@nestjs/common':
+        specifier: ^10.2.7
+        version: 10.2.7(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      '@nestjs/core':
+        specifier: ^10.2.7
+        version: 10.2.7(@nestjs/common@10.2.7)(@nestjs/microservices@10.2.7)(@nestjs/platform-express@10.2.7)(@nestjs/websockets@10.2.7)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      graphql:
+        specifier: ^16.8.1
+        version: 16.8.1
+      rimraf-cqrs-lib:
+        specifier: workspace:*
+        version: link:../../packages/rimraf-cqrs-lib
+      types:
+        specifier: workspace:*
+        version: link:../../packages/types
+    devDependencies:
+      '@graphql-codegen/cli':
+        specifier: 5.0.0
+        version: 5.0.0(@types/node@20.8.5)(bufferutil@4.0.7)(graphql@16.8.1)(typescript@5.2.2)(utf-8-validate@5.0.10)
+      '@graphql-codegen/typescript':
+        specifier: 4.0.1
+        version: 4.0.1(graphql@16.8.1)
+      '@graphql-codegen/typescript-resolvers':
+        specifier: 4.0.1
+        version: 4.0.1(graphql@16.8.1)
+      '@nestjs/cli':
+        specifier: ^10.1.18
+        version: 10.1.18
+      tsconfig:
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+      tsconfig-paths:
+        specifier: 4.2.0
+        version: 4.2.0
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
+
   packages/codegen-graphql-mutaions:
     dependencies:
       '@graphql-codegen/cli':
@@ -1534,6 +1577,23 @@ packages:
       tslib: 2.5.3
     dev: true
 
+  /@graphql-codegen/typescript-resolvers@4.0.1(graphql@16.8.1):
+    resolution: {integrity: sha512-dydE2VsNud/gZZG9FV0DldPA7voExCn7FQE3V9ZAjhqCDjCcSDHUIWxG5JoaW0G75ooPEDmN7ZFd+uaJ2BEqzQ==}
+    peerDependencies:
+      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      '@graphql-codegen/plugin-helpers': 5.0.1(graphql@16.8.1)
+      '@graphql-codegen/typescript': 4.0.1(graphql@16.8.1)
+      '@graphql-codegen/visitor-plugin-common': 4.0.1(graphql@16.8.1)
+      '@graphql-tools/utils': 10.0.7(graphql@16.8.1)
+      auto-bind: 4.0.0
+      graphql: 16.8.1
+      tslib: 2.5.3
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+    dev: true
+
   /@graphql-codegen/typescript@4.0.1(graphql@16.8.1):
     resolution: {integrity: sha512-3YziQ21dCVdnHb+Us1uDb3pA6eG5Chjv0uTK+bt9dXeMlwYBU8MbtzvQTo4qvzWVC1AxSOKj0rgfNu1xCXqJyA==}
     peerDependencies:
@@ -1805,7 +1865,7 @@ packages:
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
-      '@graphql-tools/utils': 10.0.6(graphql@16.8.1)
+      '@graphql-tools/utils': 10.0.7(graphql@16.8.1)
       graphql: 16.8.1
       tslib: 2.6.2
 
@@ -1816,7 +1876,7 @@ packages:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
       graphql: 16.8.1
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: true
 
   /@graphql-tools/prisma-loader@8.0.1(@types/node@20.8.5)(bufferutil@4.0.7)(graphql@16.8.1)(utf-8-validate@5.0.10):
@@ -1860,7 +1920,7 @@ packages:
       '@ardatan/relay-compiler': 12.0.0(graphql@16.8.1)
       '@graphql-tools/utils': 10.0.7(graphql@16.8.1)
       graphql: 16.8.1
-      tslib: 2.5.3
+      tslib: 2.6.2
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -1873,7 +1933,7 @@ packages:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
       '@graphql-tools/merge': 9.0.0(graphql@16.8.1)
-      '@graphql-tools/utils': 10.0.6(graphql@16.8.1)
+      '@graphql-tools/utils': 10.0.7(graphql@16.8.1)
       graphql: 16.8.1
       tslib: 2.6.2
       value-or-promise: 1.0.12
@@ -1926,6 +1986,7 @@ packages:
       dset: 3.1.2
       graphql: 16.8.1
       tslib: 2.6.2
+    dev: false
 
   /@graphql-tools/utils@10.0.7(graphql@16.8.1):
     resolution: {integrity: sha512-KOdeMj6Hd/MENDaqPbws3YJl3wVy0DeYnL7PyUms5Skyf7uzI9INynDwPMhLXfSb0/ph6BXTwMd5zBtWbF8tBQ==}

@@ -1,0 +1,34 @@
+{
+  "name": "write-model-v2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "nest build",
+    "start": "nest start",
+    "dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/main",
+    "codegen": "graphql-codegen --config codegen.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.9.4",
+    "@nestjs/common": "^10.2.7",
+    "@nestjs/core": "^10.2.7",
+    "graphql": "^16.8.1",
+    "rimraf-cqrs-lib": "workspace:*",
+    "types": "workspace:*"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "5.0.0",
+    "@graphql-codegen/typescript": "4.0.1",
+    "@graphql-codegen/typescript-resolvers": "4.0.1",
+    "@nestjs/cli": "^10.1.18",
+    "tsconfig": "workspace:*",
+    "tsconfig-paths": "4.2.0",
+    "typescript": "^5.2.2"
+  }
+}

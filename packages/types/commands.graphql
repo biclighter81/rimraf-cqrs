@@ -4,21 +4,23 @@ type CommandResponse {
   errorMessage: String
 }
 
-input BuildArticle{
-    articleId: ID!
-    name: String!
+input BuildArticle {
+  name: String!
 }
 
-input ArticleReadyForSale{
-    articleId: ID!
-    price: Int!
+input ArticleReadyForSale {
+  articleId: ID!
+  price: Int!
 }
 
-type Mutation {
+type ArticleCommands {
   buildArticle(payload: BuildArticle!): CommandResponse!
   articleReadyForSale(payload: ArticleReadyForSale!): CommandResponse!
 }
+type Mutation {
+  article: ArticleCommands
+}
 
 type Query {
-#  healthCheck: String!
+  healthCheck: String!
 }
