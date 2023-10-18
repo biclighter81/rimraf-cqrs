@@ -9,12 +9,7 @@ const config: CodegenConfig = {
       plugins: ["typescript", "typescript-resolvers"],
       config: {
         useIndexSignature: true,
-        avoidOptionals: {
-          field: true,
-          inputValue: true,
-          object: true,
-          defaultValue: true
-        },
+        avoidOptionals: false,
         contextType: "../Graphql.context#GraphQlContext"
       }
     }

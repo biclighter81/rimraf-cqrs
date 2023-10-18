@@ -1,5 +1,4 @@
 import { Inject, Logger, Module, Provider } from '@nestjs/common';
-import { ListGateway } from './List.gateway';
 import { QueueReducer, ReadModelList } from './ReadModel';
 import * as amqp from 'amqplib';
 import { ListService } from './list.service';
@@ -8,6 +7,7 @@ import { Event, EventHandlerFunc, Reducer } from 'rimraf-cqrs-lib';
 import { ExampleEvents } from 'types';
 import { Db, MongoClient, ObjectId, WithId, Document } from 'mongodb';
 import { exampleReducer } from 'read-reducer';
+import { ListGateway } from './list.gateway';
 
 const readModelListProvider: Provider = {
   provide: 'ReadModelList',

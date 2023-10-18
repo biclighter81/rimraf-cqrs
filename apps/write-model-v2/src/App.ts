@@ -17,8 +17,7 @@ export const resolvers: Resolvers = {
     Query: {
         healthCheck: () => "Ok"
     },
-    Mutation: mutation,
-    //CommandResponse: { id: ({ id }) => id, name: (ctx, _, __, info) => JSON.stringify(info), errorMessage: (ctx) => ctx.errorMessage },
+    Mutation: mutation,    
     ArticleCommands: ArticleCommands
 }
 

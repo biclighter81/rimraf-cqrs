@@ -9,20 +9,8 @@
 /* eslint-disable */
   import { request } from 'graphql-request';
 
-  interface ArticleReadyForSale{
-	articleId: string;
-	price: number
-}
-interface BuildArticle{
-	articleId: string;
-	name: string
-}
-export interface CommandResponse{
-	errorMessage?: string;
-	id: string;
-	name?: string
-}
-export const articleReadyForSale = (payload: ArticleReadyForSale) => {
+  export interface ArticleCommands{
+	articleReadyForSale = (payload: ArticleReadyForSale) => {
             const document = `
         mutation ($payload: ArticleReadyForSale!) {
           articleReadyForSale(payload:$payload) {
@@ -43,8 +31,8 @@ export const articleReadyForSale = (payload: ArticleReadyForSale) => {
                 throw err;
             return ""
         })
-          }
-export const buildArticle = (payload: BuildArticle) => {
+          };
+	buildArticle = (payload: BuildArticle) => {
             const document = `
         mutation ($payload: BuildArticle!) {
           buildArticle(payload:$payload) {
@@ -66,4 +54,18 @@ export const buildArticle = (payload: BuildArticle) => {
             return ""
         })
           }
+}
+interface ArticleReadyForSale{
+	articleId: string;
+	price: number
+}
+interface BuildArticle{
+	name: string
+}
+export interface CommandResponse{
+	errorMessage?: string;
+	id: string;
+	name?: string
+}
+export const article?: ArticleCommands
   

@@ -5,9 +5,9 @@ export const ArticleCommands: ArticleCommandsResolvers = {
 
         return { id: "from articleOps res", name: "namess" + param.payload.articleId, errorMessage: "ddd" }
     },
-    buildArticles: async (_, { payload }) => {
+    buildArticle: async (_, { payload }) => {
         if (payload.name == 'sven')
-            return { id: "", errorMessage: "ddd" }
+            return { id: "",name:"", errorMessage: "ddd" }
         return { id: "from articleOps res", name: "namess", errorMessage: "ddd" }
     }
 }

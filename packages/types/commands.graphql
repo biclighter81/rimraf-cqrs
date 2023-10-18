@@ -1,6 +1,5 @@
 type CommandResponse {
   id: ID!
-  name: String
   errorMessage: String
 }
 

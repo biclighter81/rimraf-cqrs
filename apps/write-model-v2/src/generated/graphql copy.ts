@@ -44,13 +44,14 @@ export type BuildArticle = {
 
 export type CommandResponse = {
   __typename?: 'CommandResponse';
-  errorMessage?: Maybe<Scalars['String']['output']>;
+  errorMessage: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  name: Maybe<Scalars['String']['output']>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  article?: Maybe<ArticleCommands>;
+  article: Maybe<ArticleCommands>;
 };
 
 export type Query = {
@@ -157,29 +158,30 @@ export type ResolversParentTypes = ResolversObject<{
 }>;
 
 export type ArticleCommandsResolvers<ContextType = GraphQlContext, ParentType extends ResolversParentTypes['ArticleCommands'] = ResolversParentTypes['ArticleCommands']> = ResolversObject<{
-  articleReadyForSale?: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<ArticleCommandsArticleReadyForSaleArgs, 'payload'>>;
-  buildArticle?: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<ArticleCommandsBuildArticleArgs, 'payload'>>;
+  articleReadyForSale: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<ArticleCommandsArticleReadyForSaleArgs, 'payload'>>;
+  buildArticle: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<ArticleCommandsBuildArticleArgs, 'payload'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type CommandResponseResolvers<ContextType = GraphQlContext, ParentType extends ResolversParentTypes['CommandResponse'] = ResolversParentTypes['CommandResponse']> = ResolversObject<{
-  errorMessage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  errorMessage: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type MutationResolvers<ContextType = GraphQlContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  article?: Resolver<Maybe<ResolversTypes['ArticleCommands']>, ParentType, ContextType>;
+  article: Resolver<Maybe<ResolversTypes['ArticleCommands']>, ParentType, ContextType>;
 }>;
 
 export type QueryResolvers<ContextType = GraphQlContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  healthCheck?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  healthCheck: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 }>;
 
 export type Resolvers<ContextType = GraphQlContext> = ResolversObject<{
-  ArticleCommands?: ArticleCommandsResolvers<ContextType>;
-  CommandResponse?: CommandResponseResolvers<ContextType>;
-  Mutation?: MutationResolvers<ContextType>;
-  Query?: QueryResolvers<ContextType>;
+  ArticleCommands: ArticleCommandsResolvers<ContextType>;
+  CommandResponse: CommandResponseResolvers<ContextType>;
+  Mutation: MutationResolvers<ContextType>;
+  Query: QueryResolvers<ContextType>;
 }>;
 
