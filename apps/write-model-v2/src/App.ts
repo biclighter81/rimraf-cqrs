@@ -46,7 +46,7 @@ export class AppService implements OnApplicationBootstrap, OnApplicationShutdown
         
      }
     private logger: Logger = new Logger(AppService.name);
-    private apolloServer: ApolloServer<GraphQlContext>;
+    private apolloServer?: ApolloServer<GraphQlContext>=undefined;
     async onApplicationBootstrap() {
         this.logger.log("Starting...");
         // The ApolloServer constructor requires two parameters: your schema
@@ -76,7 +76,7 @@ export class AppService implements OnApplicationBootstrap, OnApplicationShutdown
 
     onApplicationShutdown() {
         this.logger.log("Ending...");
-        this.apolloServer.stop();
+        this.apolloServer?.stop();
     }
 
 }

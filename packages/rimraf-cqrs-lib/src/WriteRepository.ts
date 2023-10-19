@@ -27,7 +27,7 @@ export class DatabaseRepository<TEventDef, TAgg> implements IAggregatRepository<
         if (!events?.length) return null;
         let state: any = {};
         for (const event of events) {
-            const eventFunc = this.reducer[event.eventName];
+            const eventFunc = (this.reducer[event.eventName as unknown as string]) as any;
             if (eventFunc !== undefined)
                 state = eventFunc(event, state);
         }
