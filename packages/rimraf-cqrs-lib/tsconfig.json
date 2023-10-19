@@ -1,9 +1,5 @@
 {
-  "exclude": ["dist", "build", "node_modules"],
+  "extends": "tsconfig/nestjs.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "ES5",
-    "outDir": "./dist"
-  },
-  "include": ["src/**/*"]
+  }
 }

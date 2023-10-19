@@ -259,9 +259,21 @@ importers:
       '@nestjs/core':
         specifier: ^10.2.7
         version: 10.2.7(@nestjs/common@10.2.7)(@nestjs/platform-express@10.2.7)(@nestjs/websockets@10.2.7)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      '@nestjs/mongoose':
+        specifier: ^10.0.1
+        version: 10.0.1(@nestjs/common@10.2.7)(@nestjs/core@10.2.7)(mongoose@7.6.2)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      debug:
+        specifier: ^4.3.4
+        version: 4.3.4
+      dotenv:
+        specifier: ^16.3.1
+        version: 16.3.1
       graphql:
         specifier: ^16.8.1
         version: 16.8.1
+      mongoose:
+        specifier: ^7.6.2
+        version: 7.6.2
       rimraf-cqrs-lib:
         specifier: workspace:*
         version: link:../../packages/rimraf-cqrs-lib
@@ -281,6 +293,9 @@ importers:
       '@nestjs/cli':
         specifier: ^10.1.18
         version: 10.1.18
+      '@types/debug':
+        specifier: ^4.1.10
+        version: 4.1.10
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -320,9 +335,25 @@ importers:
 
   packages/rimraf-cqrs-lib:
     dependencies:
+      debug:
+        specifier: ^4.3.4
+        version: 4.3.4
+      mongoose:
+        specifier: ^7.6.2
+        version: 7.6.2
+    devDependencies:
+      '@types/debug':
+        specifier: ^4.1.10
+        version: 4.1.10
       '@types/node':
         specifier: 20.8.5
         version: 20.8.5
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
 
   packages/tsconfig: {}
 
@@ -2787,6 +2818,12 @@ packages:
     dependencies:
       '@types/node': 20.8.5
 
+  /@types/debug@4.1.10:
+    resolution: {integrity: sha512-tOSCru6s732pofZ+sMv9o4o3Zc+Sa8l3bxd/tweTQudFn06vAzb13ZX46Zi6m6EJ+RUbRTHvgQJ1gBtSgkaUYA==}
+    dependencies:
+      '@types/ms': 0.7.33
+    dev: true
+
   /@types/eslint-scope@3.7.5:
     resolution: {integrity: sha512-JNvhIEyxVW6EoMIFIvj93ZOywYFatlpu9deeH6eSx6PE3WHYvHaQtmHmQeNw7aA81bYGBPPQqdtBm6b1SsQMmA==}
     dependencies:
@@ -2876,6 +2913,10 @@ packages:
 
   /@types/mime@3.0.2:
     resolution: {integrity: sha512-Wj+fqpTLtTbG7c0tH47dkahefpLKEbB+xAZuLq7b4/IDHPl/n6VoXcyUQ2bypFlbSwvCr0y+bD4euTTqTJsPxQ==}
+
+  /@types/ms@0.7.33:
+    resolution: {integrity: sha512-AuHIyzR5Hea7ij0P9q7vx7xu4z0C28ucwjAZC0ja7JhINyCnOw8/DnvAPQQ9TfOlCtZAmCERKQX9+o1mgQhuOQ==}
+    dev: true
 
   /@types/node-fetch@2.6.6:
     resolution: {integrity: sha512-95X8guJYhfqiuVVhRFxVQcf4hW/2bCuoPwDasMf/531STFoNoWTT7YDnWdXHEZKqAGUigmpG31r2FE70LwnzJw==}

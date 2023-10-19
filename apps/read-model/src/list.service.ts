@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
-import { Event } from 'rimraf-cqrs-lib';
+
 import { QueueReducer, ReadModelList } from "./ReadModel";
 
 @Injectable()

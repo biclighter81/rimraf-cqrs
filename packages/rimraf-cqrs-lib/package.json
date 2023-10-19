@@ -4,13 +4,17 @@
   "description": "",
   "license": "MIT",
   "private": true,
-  "main": "./dist/index",
+  "main": "./src/index.ts",
   "types": "./src/index.ts",
-  "type": "commonjs",
-  "scripts": {
-    "build": "tsc"
-  },
+  "scripts": {},
   "dependencies": {
-    "@types/node": "20.8.5"
+    "debug": "^4.3.4",
+    "mongoose": "^7.6.2"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.10",
+    "@types/node": "20.8.5",
+    "tsconfig": "workspace:*",
+    "typescript": "^5.2.2"
   }
 }

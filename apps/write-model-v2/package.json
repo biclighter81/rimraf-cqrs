@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "nest build",
+    "build": "rm -r dist && tsc",
     "start": "nest start",
     "dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -18,7 +18,11 @@
     "@apollo/server": "^4.9.4",
     "@nestjs/common": "^10.2.7",
     "@nestjs/core": "^10.2.7",
+    "@nestjs/mongoose": "^10.0.1",
+    "debug": "^4.3.4",
+    "dotenv": "^16.3.1",
     "graphql": "^16.8.1",
+    "mongoose": "^7.6.2",
     "rimraf-cqrs-lib": "workspace:*",
     "types": "workspace:*"
   },
@@ -29,6 +33,7 @@
     "@nestjs/cli": "^10.1.18",
     "tsconfig": "workspace:*",
     "tsconfig-paths": "4.2.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "@types/debug": "^4.1.10"
   }
 }
