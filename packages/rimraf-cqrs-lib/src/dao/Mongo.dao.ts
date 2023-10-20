@@ -1,8 +1,10 @@
-import { DomainEvent,Dao } from "./types";
-import { Connection } from "mongoose";
-export class MongoDao implements Dao {
+import { Db } from "mongodb";
+import { DomainEvent } from "../types";
+import { IDao } from "./IDao";
 
-    constructor(private readonly connection: Connection) { }
+export class MongoDao implements IDao {
+
+    constructor(private readonly connection: Db) { }
     load(id: string, aggName: string): Promise<DomainEvent<any>[]> {
         const collection = this.connection.collection<DomainEvent<any>>(aggName);
         const data = collection.find({ id }).toArray();

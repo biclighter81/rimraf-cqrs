@@ -1,5 +1,6 @@
 
-import { IAggregatRepository, Reducer, Dao } from "./types";
+import { IDao } from "./dao";
+import { IAggregatRepository, Reducer } from "./types";
 
 
 export class DatabaseRepository<TEventDef, TAgg> implements IAggregatRepository<TEventDef, TAgg>{
@@ -7,7 +8,7 @@ export class DatabaseRepository<TEventDef, TAgg> implements IAggregatRepository<
         private reducer: Reducer<TEventDef, TAgg>,
         private aggName: string,
         private idAccessor: (payload: TEventDef[keyof TEventDef], eventName: string) => string,
-        private dao: Dao
+        private dao: IDao
     ) { }
     async save<K extends keyof TEventDef>(eventName: K & string, payload: TEventDef[K]): Promise<void> {
 
@@ -27,7 +28,7 @@ export class DatabaseRepository<TEventDef, TAgg> implements IAggregatRepository<
         if (!events?.length) return null;
         let state: any = {};
         for (const event of events) {
-            const eventFunc = (this.reducer[event.eventName as unknown as string]) as any;
+            const eventFunc = (this.reducer[event.eventName]);
             if (eventFunc !== undefined)
                 state = eventFunc(event, state);
         }

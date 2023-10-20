@@ -23,7 +23,3 @@ export type Reducer<TEventDef, TState> = {
     ): Promise<Readonly<TAgg> | null>
   }
   
-  export interface Dao {
-    load(id: string, aggName: string): Promise<DomainEvent<any>[]>,
-    insertEvent(event: DomainEvent<any>, aggName: string): Promise<void>
-  }

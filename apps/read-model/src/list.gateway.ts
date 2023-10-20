@@ -3,8 +3,8 @@ import * as amqp from 'amqplib';
 import { OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer, WebSocketGateway } from "@nestjs/websockets";
 import { Server } from "socket.io";
 import { Observable, share } from "rxjs";
-import { Event } from 'rimraf-cqrs-lib';
-import { QueueReducer, ReadModelList } from "./ReadModel";
+import { DomainEvent as Event } from 'rimraf-cqrs-lib';
+import { ReadModelList } from "./ReadModel";
 import { Db } from "mongodb";
 
 @WebSocketGateway({ cors: '*' })
