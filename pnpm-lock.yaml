@@ -335,6 +335,9 @@ importers:
 
   packages/rimraf-cqrs-lib:
     dependencies:
+      '@apollo/server':
+        specifier: ^4.9.4
+        version: 4.9.4(graphql@16.8.1)
       '@nestjs/common':
         specifier: ^10.2.7
         version: 10.2.7(reflect-metadata@0.1.13)(rxjs@7.8.1)
@@ -344,9 +347,15 @@ importers:
       debug:
         specifier: ^4.3.4
         version: 4.3.4
+      dotenv:
+        specifier: ^16.3.1
+        version: 16.3.1
       mongodb:
         specifier: ^6.1.0
         version: 6.1.0
+      rimraf-rabbitmq:
+        specifier: workspace:*
+        version: link:../rimraf-rabbitmq
     devDependencies:
       '@types/debug':
         specifier: ^4.1.10
@@ -354,6 +363,34 @@ importers:
       '@types/node':
         specifier: 20.8.5
         version: 20.8.5
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
+
+  packages/rimraf-rabbitmq:
+    dependencies:
+      amqplib:
+        specifier: ^0.10.3
+        version: 0.10.3
+      debug:
+        specifier: ^4.3.4
+        version: 4.3.4
+      dotenv:
+        specifier: ^16.3.1
+        version: 16.3.1
+      rxjs:
+        specifier: ^7.8.1
+        version: 7.8.1
+    devDependencies:
+      '@types/amqplib':
+        specifier: ^0.10.2
+        version: 0.10.2
+      '@types/debug':
+        specifier: ^4.1.10
+        version: 4.1.10
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig

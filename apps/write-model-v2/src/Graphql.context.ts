@@ -5,12 +5,9 @@ import { articleReducer } from "./Aggregates/article";
 
 export const getContext = (dao: IDao) => {
     return (req: IncomingMessage, res: ServerResponse) => {
-
         return {
             articleRepository: new DatabaseRepository(articleReducer, "Article", ({ articleId }) => articleId, dao)
-        }
-
-        
+        }        
     }
 }
 

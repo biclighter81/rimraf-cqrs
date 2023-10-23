@@ -3,7 +3,7 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./App";
 import * as dotenv from 'dotenv';
 
-//dotenv.config();
+dotenv.config();
 
 (async () => {
     const app = await NestFactory.createApplicationContext(AppModule);
