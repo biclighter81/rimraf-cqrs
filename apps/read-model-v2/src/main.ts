@@ -6,7 +6,7 @@ import * as http from "http";
 import { Server } from "socket.io";
 import Debug from "debug";
 import { getRabbitMqConnection } from 'rimraf-rabbitmq';
-import { ArticleEvents } from 'types';
+import { AppEventBus, ArticleEvents } from 'types';
 
 const app = express();
 const server = http.createServer(app);
@@ -46,8 +46,10 @@ rabbtitServer.then(server=>{
     })
 });
 
-const projection = (listName:string)=>{
+const projection = (listName:string, listen:Partial<AppEventBus>)=>{
     
 }
 
-const articleOverview=projection("articleOverview");
+const articleOverview=projection("articleOverview",{
+    
+});
