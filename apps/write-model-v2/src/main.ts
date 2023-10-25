@@ -1,13 +1,13 @@
 
-import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./App";
+import { app } from "./App";
 import * as dotenv from 'dotenv';
+import * as exitHook from 'async-exit-hook';
 
 dotenv.config();
 
 (async () => {
-    const app = await NestFactory.createApplicationContext(AppModule);
-    app.enableShutdownHooks()
+    const stopApp = await app();
+    exitHook(stopApp)
 })().catch(e => {
     console.error(e)
 });
