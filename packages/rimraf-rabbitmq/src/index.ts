@@ -10,7 +10,7 @@ interface RabbitEvent<T> {
     eventName: string;
 }
 
-export interface WorkQueueReducer { (event: RabbitEvent<unknown>): Promise<void> };
+export interface WorkQueueReducer<T> { (event: RabbitEvent<T>): Promise<void> };
 
 export type RabbitMqConnection = ReturnType<typeof getRabbitMqConnection>;
 export type RabbitMqConnectionParameter = Parameters<typeof getRabbitMqConnection>[0];
@@ -33,9 +33,9 @@ export const getRabbitMqConnection = async (options: amqp.Options.Connect) => {
 
         if (aggChannel[namespace] === undefined) {
             await channel.assertExchange(namespace, "fanout", { durable: true });
-            aggChannel[namespace] = (params: RabbitEvent<unknown>) => {
-                logger("📤 publish %O", params);
-                channel.publish(namespace, params.eventName, Buffer.from(JSON.stringify(params)), { persistent: true });
+            aggChannel[namespace] = (event: RabbitEvent<unknown>) => {
+                logger("%s 📤 publish %O", event.eventName,event.payload);
+                channel.publish(namespace, event.eventName, Buffer.from(JSON.stringify(event)), { persistent: true });
             }
         }
         const publish = aggChannel[namespace];
@@ -64,7 +64,7 @@ export const getRabbitMqConnection = async (options: amqp.Options.Connect) => {
                 await channel.consume(queue.queue, (msg) => {
                     if (msg !== null) {
                         const event = JSON.parse(msg.content.toString()) as RabbitEvent<unknown>;
-                        logger("%s received 📥", event.eventName)
+                        logger("%s received 📥 %O", event.eventName,event.payload);
                         subscriber.next(event)
                     }
                 }, { noAck: true })
@@ -81,7 +81,7 @@ export const getRabbitMqConnection = async (options: amqp.Options.Connect) => {
     /**
      * consumer/queue worker for queue pattern
     */
-    const consumer = async (namespace: string, handler: WorkQueueReducer) => {
+    const consumer = async <T>(namespace: string, handler: WorkQueueReducer<T[keyof T]>) => {
         const logger = Debug("RabbitMq:consumer:" + namespace);
         logger("listen 👂👂👂 to your 💘");
 
@@ -92,10 +92,10 @@ export const getRabbitMqConnection = async (options: amqp.Options.Connect) => {
         channel.bindQueue(queue.queue, namespace, "");
 
         channel.consume(queue.queue, (msg) => {
-            logger(msg?.content.toString());
+            
             if (msg !== null) {
-                const event = JSON.parse(msg.content.toString()) as RabbitEvent<unknown>;
-                logger("%s received 📥", event.eventName);
+                const event = JSON.parse(msg.content.toString()) as RabbitEvent<T[keyof T]>;
+                logger("%s received 📥 %O", event.eventName,event.payload);
                 handler(event).then(() => {
                     channel.ack(msg);
                 });
