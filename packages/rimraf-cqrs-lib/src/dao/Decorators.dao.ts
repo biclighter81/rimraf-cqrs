@@ -1,7 +1,7 @@
 import Debug from "debug";
 import { IDao } from "./IDao";
 import { DomainEvent } from "../types";
-import { RabbitMqConnection, RabbitMqConnectionParameter, getRabbitMqConnection } from "rimraf-rabbitmq";
+import { RabbitMqConnection } from "rimraf-rabbitmq";
 
 export class LoggerDao implements IDao {
 
@@ -24,10 +24,7 @@ export class LoggerDao implements IDao {
 
 export class RabbitSender implements IDao {
 
-    private rabbitMq: RabbitMqConnection
-    constructor( options: RabbitMqConnectionParameter,private component: IDao) {
-        this.rabbitMq = getRabbitMqConnection(options);
-    }
+    constructor( private rabbitMq: RabbitMqConnection,private component: IDao) {}
     load(id: string, aggName: string): Promise<DomainEvent<any>[]> {
         return this.component.load(id, aggName);
     }

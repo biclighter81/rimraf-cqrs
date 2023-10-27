@@ -20,7 +20,8 @@
     "rimraf-cqrs-lib": "workspace:*",
     "rimraf-rabbitmq": "workspace:*",
     "socket.io": "^4.7.2",
-    "types": "workspace:*"
+    "types": "workspace:*",
+    "read-reducer": "workspace:*"
   },
   "devDependencies": {
     "@types/async-exit-hook": "^2.0.1",

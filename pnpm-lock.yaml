@@ -168,6 +168,9 @@ importers:
       mongodb:
         specifier: ^6.1.0
         version: 6.1.0
+      read-reducer:
+        specifier: workspace:*
+        version: link:../../packages/read-reducer
       rimraf-cqrs-lib:
         specifier: workspace:*
         version: link:../../packages/rimraf-cqrs-lib
@@ -299,6 +302,9 @@ importers:
       rimraf-cqrs-lib:
         specifier: workspace:*
         version: link:../../packages/rimraf-cqrs-lib
+      rimraf-rabbitmq:
+        specifier: workspace:*
+        version: link:../../packages/rimraf-rabbitmq
       types:
         specifier: workspace:*
         version: link:../../packages/types

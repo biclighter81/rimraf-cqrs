@@ -3,23 +3,23 @@ import { IDao } from "./dao";
 import { IAggregatRepository, Reducer } from "./types";
 
 export const databaseRepository = <TEventsbus>(dao: IDao) =>
-    <TAggName extends (keyof TEventsbus) & string,TAgg>(
+    <TAggName extends (keyof TEventsbus) & string, TAgg>(
         aggName: TAggName,
         reducer: Reducer<TEventsbus[TAggName], TAgg>,
         idAccessor: (payload: TEventsbus[TAggName][keyof TEventsbus[TAggName]], eventName: string) => string
     ): IAggregatRepository<TEventsbus[TAggName], TAgg> => {
         return {
-            save: (eventName, payload) => {
-                const id = idAccessor(payload, eventName);
+            save: (event) => {
+                const aggId = idAccessor(event.payload, event.eventName);
 
-                const event = {
-                    payload,
-                    eventName,
+                const insertEvent = {
+                    payload: event.payload,
+                    eventName: event.eventName,
                     timestamp: new Date().getTime(),
-                    id,
+                    aggId,
                 };
 
-                return dao.insertEvent(event, aggName);
+                return dao.insertEvent(insertEvent, aggName);
             },
             getState: async (id) => {
                 const events = await dao.load(id, aggName);
