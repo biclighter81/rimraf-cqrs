@@ -264,6 +264,9 @@ importers:
       rimraf-rabbitmq:
         specifier: workspace:*
         version: link:../rimraf-rabbitmq
+      socket.io:
+        specifier: ^4.7.2
+        version: 4.7.2
     devDependencies:
       '@types/debug':
         specifier: ^4.1.10
