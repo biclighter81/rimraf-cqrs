@@ -9,7 +9,7 @@ import { ConsumerNamespaceFunction, RabbitMqConnection, getRabbitMqConnection } 
 import { AppEventBus, ArticleEvents } from 'types';
 import { articleOverviewReducer } from 'read-reducer';
 import { DomainEvent, IEventHandler, ProjectionHandler, Reducer } from 'rimraf-cqrs-lib';
-import { Collection, Db, MongoClient, ObjectId, WithId, Document } from 'mongodb';
+import { Db, MongoClient, ObjectId, WithId, Document } from 'mongodb';
 
 const app = express();
 const server = http.createServer(app);
@@ -49,37 +49,12 @@ const mongodb = async () => {
     return db;
 }
 
-
-// interface IReadRepository {
-
-// }
-
-// interface Projection<TAppEventBus> {
-//     (listName: string, reducers: ProjectionReducer<TAppEventBus>): void
-// }
-
-// const projection = <TAppEventBus>(): Projection<TAppEventBus> => {
-
-//     const projections: { [listName: string]: ProjectionReducer<TAppEventBus> } = {};
-
-//     return (listName: string, reducers: ProjectionReducer<TAppEventBus>) => {
-//         projections[listName] = reducers;
-//     }
-// }
-
-// const projections = projection<AppEventBus>()
-
-// projections("articleOverview", {
-//     Article: articleOverviewReducer
-// });
-
-
 /////////////////////
 
 
 interface Projection<TAppEventBus> {
     listName: string;
-    handler: ProjectionHandler<TAppEventBus, Promise<void>>;
+    aggHandler: ProjectionHandler<TAppEventBus, Promise<void>>;
 
     getState?: () => Promise<unknown>;
 }
@@ -94,6 +69,7 @@ interface IProjectionMediator<TAppEventBus> {
 
 interface ProjectionMediatorEntry<TAppEventBus> extends Projection<TAppEventBus> {
     webSocket: Namespace;
+    logger: Debug.Debugger;
 }
 
 type SocketHub = ReturnType<RabbitMqConnection["listener"]>;
@@ -102,12 +78,18 @@ class ProjectionMediator<TAppEventBus> implements IProjectionMediator<TAppEventB
     private readonly projections: { [listName: string]: ProjectionMediatorEntry<TAppEventBus> } = {};
     private socketHub: { [aggName: string]: SocketHub } = {};
 
+    private logger = Debug("ProjectionMediator");
+
     constructor(
         private rabbitServer: RabbitMqConnection,
         private socketIoServer: Server
     ) { }
 
     register(projection: Projection<TAppEventBus>): void {
+        const logger = this.logger.extend(projection.listName);
+
+        logger("register 🎁");
+
         const webSocket = this.socketIoServer.of(projection.listName);
         const getState = projection.getState;
         if (getState !== undefined) {
@@ -119,7 +101,7 @@ class ProjectionMediator<TAppEventBus> implements IProjectionMediator<TAppEventB
             });
         }
 
-        this.projections[projection.listName] = { ...projection, webSocket }
+        this.projections[projection.listName] = { ...projection, webSocket, logger }
     }
 
     private getProjectionEventHandler(
@@ -128,22 +110,20 @@ class ProjectionMediator<TAppEventBus> implements IProjectionMediator<TAppEventB
         event: DomainEvent<any>
     ): IEventHandler<any, Promise<void>> | undefined {
 
-        const aggHandler = projection.handler[aggName as keyof TAppEventBus];
-        //const aggHandler = projection.handler(aggName);
-        if (aggHandler !== undefined) {
-            const eventHandler = aggHandler[event.eventName];
-            return eventHandler;
-        }
+        const aggHandler = projection.aggHandler[aggName as keyof TAppEventBus];
+        return aggHandler;
     }
 
     private workerQueue(
         propjectionConsumer: ConsumerNamespaceFunction<unknown>,
-        projection: Projection<TAppEventBus>,
-        aggName: Extract<keyof TAppEventBus, string>
+        projection: ProjectionMediatorEntry<TAppEventBus>,
+        aggName: string
     ) {
         propjectionConsumer(aggName, async (event) => {
-            const eventHandler = this.getProjectionEventHandler(projection, aggName, event);
+            //const eventHandler = this.getProjectionEventHandler(projection, aggName, event);
+            const eventHandler = projection.aggHandler[aggName];
             if (eventHandler != undefined) {
+                projection.logger("workerQueue 💾 to %s for event %s", aggName, event.eventName);
                 return eventHandler(event);
             }
             return Promise.resolve()
@@ -160,6 +140,7 @@ class ProjectionMediator<TAppEventBus> implements IProjectionMediator<TAppEventB
         }
         const socket = this.socketHub[aggName];
         socket.subscribe((event) => {
+            projection.logger("relay 📢 to socket.io to %s for event %s", aggName, event.eventName);
             projection.webSocket.emit(aggName, event);
         })
     }
@@ -167,9 +148,12 @@ class ProjectionMediator<TAppEventBus> implements IProjectionMediator<TAppEventB
 
         for (const listName in this.projections) {
             const projection = this.projections[listName];
+            projection.logger("start 🐱‍🏍")
 
             const propjectionConsumer = await this.rabbitServer.consumer(listName);
-            for (const aggName in projection.handler) {
+            for (const aggName in projection.aggHandler) {
+                projection.logger("🌳 consume %s", aggName);
+
                 this.workerQueue(propjectionConsumer, projection, aggName);
                 this.pubSub(projection, aggName);
             }
@@ -180,11 +164,6 @@ class ProjectionMediator<TAppEventBus> implements IProjectionMediator<TAppEventB
 }
 
 ////
-
-// export type ProjectionReducer<TEventDef,TDto> = {
-//     [P in keyof TEventDef]?: [Reducer<TEventDef[P], TDto>,keyof TDto];
-//   }
-
 
 class CommonMongoProjection<TAppEventBus> implements Projection<TAppEventBus>{
 
@@ -227,11 +206,11 @@ class CommonMongoProjection<TAppEventBus> implements Projection<TAppEventBus>{
             }
             return Promise.resolve()
         }
-        this.handler[aggName] = aggHandler;
+        this.aggHandler[aggName] = aggHandler;
         return this;
     }
 
-    handler: ProjectionHandler<TAppEventBus, Promise<void>> = {};
+    aggHandler: ProjectionHandler<TAppEventBus, Promise<void>> = {};
     getState = () => {
         const collection = this.database.collection(this.listName);
         return collection.find().toArray()
@@ -242,23 +221,23 @@ class CommonMongoProjection<TAppEventBus> implements Projection<TAppEventBus>{
 /////
 (async () => {
     const db = await mongodb();
-
+    const d=articleOverviewReducer;
     const overview = new CommonMongoProjection<AppEventBus>("newlist", db)
         .addReducer("Article", articleOverviewReducer, "articleId")
 
-    const articleOverview: Projection<AppEventBus> = {
-        listName: "articleOverview",
-        handler: {
-            Article: (event) => {
+    // const articleOverview: Projection<AppEventBus> = {
+    //     listName: "articleOverview",
+    //     handler: {
+    //         Article: (event) => {
 
-                return Promise.resolve();
-            },
-        }
-    }
+    //             return Promise.resolve();
+    //         },
+    //     }
+    // }
 
     const mediator = new ProjectionMediator<AppEventBus>(await rabbtitServer, io);
 
-    mediator.register(articleOverview);
+    //mediator.register(articleOverview);
     mediator.register(overview)
     mediator.start();
 })();

@@ -8,6 +8,4 @@ dotenv.config();
 (async () => {
     const stopApp = await app();
     exitHook(stopApp)
-})().catch(e => {
-    console.error(e)
-});
+})();

@@ -12,7 +12,7 @@ declare global {
 }
 export const getApolloServer = <TContext extends BaseContext>(config: ApolloServerOptions<TContext>) => {
     const logger = Debug("ApolloServer");
-    const x = process.env;
+    
     logger("create server 🔥");
     const apolloServer = new ApolloServer<TContext>(config);
     logger("server created 🔞");

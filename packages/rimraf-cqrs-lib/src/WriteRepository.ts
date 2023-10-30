@@ -9,12 +9,12 @@ export const databaseRepository = <TEventsbus>(dao: IDao) =>
         idAccessor: (payload: TEventsbus[TAggName][keyof TEventsbus[TAggName]], eventName: string) => string
     ): IAggregatRepository<TEventsbus[TAggName], TAgg> => {
         return {
-            save: (event) => {
-                const aggId = idAccessor(event.payload, event.eventName);
+            save: (eventName, payload) => {
+                const aggId = idAccessor(payload, eventName);
 
                 const insertEvent = {
-                    payload: event.payload,
-                    eventName: event.eventName,
+                    payload: payload,
+                    eventName: eventName,
                     timestamp: new Date().getTime(),
                     aggId,
                 };

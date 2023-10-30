@@ -16,8 +16,8 @@ export type DomainEvent<T, TEventName extends string = string> = {
 
 export interface IAggregatRepository<TEventDef, TAgg> {
 
-  //save<K extends keyof TEventDef>(eventName: K & string, payload: TEventDef[K]): Promise<void>;
-  save: IEventHandler<TEventDef, Promise<void>>;
+  save<K extends keyof TEventDef>(eventName: K & string, payload: TEventDef[K]): Promise<void>;
+  //save: IEventHandler<TEventDef, Promise<void>>;
 
   getState(
     id: string

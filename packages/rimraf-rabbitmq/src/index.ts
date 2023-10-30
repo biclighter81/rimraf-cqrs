@@ -94,10 +94,12 @@ export const getRabbitMqConnection = async (options: amqp.Options.Connect) => {
         logger("listen 👂👂👂 to your 💘");
 
         const queue = await channel.assertQueue(workerName, { durable: true });
+
         return async (namespace: string, handler: WorkQueueReducer<T[keyof T]>) => {
             logger("assert to %s", namespace);
+
             await channel.assertExchange(namespace, "fanout", { durable: true });
-            channel.bindQueue(queue.queue, workerName, "");
+            channel.bindQueue(queue.queue, namespace, "");
 
             channel.consume(queue.queue, (msg) => {
 

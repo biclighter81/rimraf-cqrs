@@ -369,6 +369,13 @@ importers:
       types:
         specifier: workspace:*
         version: link:../types
+    devDependencies:
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
 
   packages/rimraf-cqrs-lib:
     dependencies:
@@ -442,6 +449,13 @@ importers:
       '@types/node':
         specifier: 20.8.5
         version: 20.8.5
+    devDependencies:
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
 
 packages:
 

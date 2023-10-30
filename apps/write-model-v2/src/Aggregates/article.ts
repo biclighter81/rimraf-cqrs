@@ -16,11 +16,9 @@ export const ArticleCommands: ArticleCommandsResolvers = {
 
 
         const articleId = randomUUID();
-        
-        
 
         await context.articleRepository.save("ArticledBuilded", { articleId, name: payload.name });
-
+        
         return { id: articleId }
     }
 }

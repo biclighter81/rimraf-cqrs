@@ -12,5 +12,9 @@
     "@types/node": "20.8.5",
     "rimraf-cqrs-lib": "workspace:*",
     "types": "workspace:*"
+  },
+  "devDependencies": {
+    "tsconfig": "workspace:*",
+    "typescript": "^5.2.2"
   }
 }
