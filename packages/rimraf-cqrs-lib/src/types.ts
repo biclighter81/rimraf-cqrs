@@ -21,7 +21,7 @@ export interface IAggregatRepository<TEventDef, TAgg> {
 
   getState(
     id: string
-  ): Promise<Readonly<TAgg> | null>
+  ): Promise<Readonly<TAgg> | undefined>
 }
 
 export interface IEventHandler<TEventDef, TReturn> {

@@ -64,8 +64,7 @@ interface BuildArticle{
 }
 export interface CommandResponse{
 	errorMessage?: string;
-	id: string;
-	name?: string
+	id: string
 }
 export const article?: ArticleCommands
   

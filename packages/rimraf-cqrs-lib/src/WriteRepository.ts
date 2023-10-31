@@ -11,6 +11,8 @@ export const databaseRepository = <TEventsbus>(dao: IDao) =>
         return {
             save: (eventName, payload) => {
                 const aggId = idAccessor(payload, eventName);
+                if(!(aggId && aggId.length>0))
+                    throw "aggId is missing";
 
                 const insertEvent = {
                     payload: payload,
@@ -23,12 +25,12 @@ export const databaseRepository = <TEventsbus>(dao: IDao) =>
             },
             getState: async (id) => {
                 const events = await dao.load(id, aggName);
-                if (!events?.length) return null;
+                if (!events?.length) return undefined;
                 let state: any = {};
                 for (const event of events) {
                     const eventFunc = (reducer[event.eventName]);
                     if (eventFunc !== undefined)
-                        state = eventFunc(event, state);
+                        state = eventFunc(event.payload, state);
                 }
                 return state;
             }

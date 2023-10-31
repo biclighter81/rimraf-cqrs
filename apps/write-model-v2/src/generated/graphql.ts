@@ -51,6 +51,12 @@ export type CommandResponse = {
 export type Mutation = {
   __typename?: 'Mutation';
   article?: Maybe<ArticleCommands>;
+  articlePriceIncreased: CommandResponse;
+};
+
+
+export type MutationArticlePriceIncreasedArgs = {
+  payload: ArticleReadyForSale;
 };
 
 export type Query = {
@@ -170,6 +176,7 @@ export type CommandResponseResolvers<ContextType = GraphQlContext, ParentType ex
 
 export type MutationResolvers<ContextType = GraphQlContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   article?: Resolver<Maybe<ResolversTypes['ArticleCommands']>, ParentType, ContextType>;
+  articlePriceIncreased?: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<MutationArticlePriceIncreasedArgs, 'payload'>>;
 }>;
 
 export type QueryResolvers<ContextType = GraphQlContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{

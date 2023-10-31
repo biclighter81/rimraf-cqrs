@@ -11,7 +11,7 @@ export class MongoDao implements IDao {
 
     load(id: string, aggName: string): Promise<DomainEvent<any>[]> {
         const collection = this.db.collection<DomainEvent<any>>(aggName);
-        const data = collection.find({ id }).toArray();
+        const data = collection.find({ aggId: id }).toArray();
         return data;
     }
     async insertEvent(event: DomainEvent<any>, aggName: string): Promise<void> {

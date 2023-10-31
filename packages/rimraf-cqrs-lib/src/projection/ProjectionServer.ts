@@ -20,7 +20,7 @@ export const getProjectionServer = <TAppEventBus>(
     });
 
     const mediator = new ProjectionMediator<TAppEventBus>(rabbitServer, io);
-    projections.forEach(mediator.register)
+    projections.forEach(mediator.register.bind(mediator))
 
     mediator.start();
 

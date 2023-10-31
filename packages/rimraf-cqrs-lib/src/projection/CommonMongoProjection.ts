@@ -1,4 +1,4 @@
-import { Db, ObjectId,Document } from "mongodb";
+import { Db, ObjectId, Document } from "mongodb";
 import { Projection } from ".";
 import { Reducer, IEventHandler, ProjectionHandler } from "../types";
 
@@ -58,6 +58,6 @@ export class CommonMongoProjection<TAppEventBus> implements Projection<TAppEvent
 export const propjectionFactory = <TAppEventBus>(db: Db) => {
     return (listName: string) => {
         const projection = new CommonMongoProjection<TAppEventBus>(listName, db)
-        return projection.addReducer;
+        return projection.addReducer.bind(projection);
     }
 }
