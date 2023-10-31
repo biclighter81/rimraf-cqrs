@@ -2,7 +2,7 @@
 import Debug from "debug";
 import { Namespace, Server } from "socket.io";
 import { ConsumerNamespaceFunction, RabbitMqConnection } from "rimraf-rabbitmq";
-import { Projection, IProjectionMediator } from ".";
+import { Projection } from ".";
 
 interface ProjectionMediatorEntry<TAppEventBus> extends Projection<TAppEventBus> {
     webSocket: Namespace;
@@ -10,7 +10,7 @@ interface ProjectionMediatorEntry<TAppEventBus> extends Projection<TAppEventBus>
 }
 
 type SocketHub = ReturnType<RabbitMqConnection["listener"]>;
-export class ProjectionMediator<TAppEventBus> implements IProjectionMediator<TAppEventBus> {
+export class ProjectionMediator<TAppEventBus> {
 
     private readonly projections: { [listName: string]: ProjectionMediatorEntry<TAppEventBus> } = {};
     private socketHub: { [aggName: string]: SocketHub } = {};

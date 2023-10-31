@@ -1,5 +1,6 @@
 export * from "./ProjectionMediator";
 export * from "./CommonMongoProjection";
+export * from "./ProjectionServer";
 
 import { ProjectionHandler } from "../types";
 
@@ -11,10 +12,4 @@ export interface Projection<TAppEventBus> {
 }
 
 
-export interface IProjectionMediator<TAppEventBus> {
-    register(projection: Projection<TAppEventBus>): void;
-
-    start(): Promise<void>;
-
-}
 
