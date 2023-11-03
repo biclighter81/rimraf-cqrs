@@ -1,100 +1,186 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.plugin = void 0;
-var plugin_helpers_1 = require("@graphql-codegen/plugin-helpers");
-var graphql_1 = require("graphql");
-var typeMap = {
+const plugin_helpers_1 = require("@graphql-codegen/plugin-helpers");
+const graphql_1 = require("graphql");
+const typeMap = {
     "ID": "string",
     "Boolean": "boolean",
     "String": "string",
     "Float": "number",
     "Int": "number"
 };
-var plugin = function (schema, documents, config, info) {
+const plugin = (schema, documents, config, info) => {
+    var _a;
     if (!config.url) {
-        throw new Error("You must specify \"url\" in my plugin configuration!");
+        throw new Error(`You must specify "url" in my plugin configuration!`);
     }
-    var astNode = (0, plugin_helpers_1.getCachedDocumentNodeFromSchema)(schema);
-    var nonUserTypes;
-    var mutationFunc = function (node) {
-        var _a;
-        return (_a = node.fields) === null || _a === void 0 ? void 0 : _a.map(function (p) { return "export const " + p; }).join('\n');
-    };
-    var fieldFunc = function (node) {
-        if ("nullabel" in node.type && "typeName" in node.type) {
-            return node.name.value + (node.type.nullabel ? "" : "?") + ": " + node.type.typeName;
-        }
-    };
-    var getTyp = function (type) {
-        if ("nullabel" in type && "typeName" in type) {
-            return type.typeName;
-        }
-    };
-    var result = (0, graphql_1.visit)(astNode, {
-        "SchemaDefinition": function (node) {
-            nonUserTypes = node.operationTypes;
-            return null;
-        },
-        "ObjectTypeDefinition": {
-            leave: function (node) {
-                var _a;
-                if (node.name.value == 'Mutation')
-                    return mutationFunc(node);
-                if (nonUserTypes.some(function (p) { return p.type.name.value == node.name.value; }))
-                    return null;
-                return "export interface ".concat(node.name.value, "{\n\t").concat((_a = node.fields) === null || _a === void 0 ? void 0 : _a.join(';\n\t'), "\n}");
-            }
-        },
-        "NamedType": {
-            leave: function (node) {
-                var scalarType = typeMap[node.name.value];
-                return { nullabel: false, typeName: scalarType !== null && scalarType !== void 0 ? scalarType : node.name.value };
-            }
-        },
-        "NonNullType": {
-            leave: function (node) {
-                if ("nullabel" in node.type && "typeName" in node.type) {
-                    return __assign(__assign({}, node.type), { nullabel: true });
+    const astNode = (0, plugin_helpers_1.getCachedDocumentNodeFromSchema)(schema);
+    const fieldDefinitionNodeParentNodeForInput = {
+        node: {
+            kind: graphql_1.Kind.FIELD_DEFINITION,
+            type: {
+                kind: graphql_1.Kind.NAMED_TYPE,
+                name: {
+                    kind: graphql_1.Kind.NAME,
+                    value: "__rootType"
                 }
-                return node.type;
+            },
+            name: {
+                kind: graphql_1.Kind.NAME,
+                value: "__rootInputDef"
             }
         },
-        "FieldDefinition": {
-            leave: function (node) {
-                if (node.arguments !== undefined && node.arguments.length > 0) {
-                    return "".concat(node.name.value, " = (").concat(node.arguments.map(fieldFunc), ") => {\n            const document = `\n        mutation (").concat(node.arguments.map(function (p) { return "$" + fieldFunc(p) + "!"; }).join(','), ") {\n          ").concat(node.name.value, "(").concat(node.arguments.map(function (p) { return p.name.value + ":$" + p.name.value; }).join(','), ") {\n              id\n              errorMessage\n            }\n          }          \n        `\n        return request<{ ").concat(node.name.value, ": ").concat(getTyp(node.type), " }>('").concat(config.url, "', document, { payload }).then(p => {\n            const response = p.").concat(node.name.value, ";\n            if (response.errorMessage)\n                throw response.errorMessage\n            return response.id\n        }).catch(err => {\n            if (err instanceof Error)\n                console.error(err);\n            else\n                throw err;\n            return \"\"\n        })\n          }");
-                }
-                if ("nullabel" in node.type && "typeName" in node.type) {
-                    return node.name.value + (node.type.nullabel ? "" : "?") + ": " + node.type.typeName;
-                }
+        type: "root"
+    };
+    const getFuncImplType = (node) => {
+        if (node.kind == graphql_1.Kind.NAMED_TYPE)
+            return node.name.value;
+        if (node.kind == graphql_1.Kind.NON_NULL_TYPE)
+            return getFuncImplType(node.type) + "!";
+        return "";
+    };
+    const getFuncImplParameterDefinition = (node) => {
+        return `${node.name.value}: ${getFuncImplType(node.type)}`;
+    };
+    const parentTemplateFunc = (templFunc) => (node) => (inner) => {
+        const _fnc = (node, start) => (inner) => {
+            const outerFunc = node.type == "child" ? _fnc(node.parent, node) : (p) => p;
+            if (start === node) {
+                return outerFunc(inner);
             }
-        },
-        // "InputValueDefinition": {
-        //   leave: (node) => {
-        //     if ("nullabel" in node.type && "typeName" in node.type) {
-        //       return node.name.value + (node.type.nullabel ? "" : "?") + ": " + node.type.typeName;
-        //     }
-        //   }
-        // },
-        "InputObjectTypeDefinition": {
-            leave: function (node) {
-                var _a, _b;
-                return "interface ".concat(node.name.value, "{\n\t").concat((_b = (_a = node.fields) === null || _a === void 0 ? void 0 : _a.map(fieldFunc)) === null || _b === void 0 ? void 0 : _b.join(';\n\t'), "\n}");
-            }
+            return outerFunc(templFunc(node, inner));
+        };
+        return _fnc(node, node)(inner);
+    };
+    /*const getFuncImplMuationGrapghQlFromParent = (node: IFieldDefinitionNodeParentNode) => (inner: string): string => {
+      const _fnc = (node: IFieldDefinitionNodeParentNode, start: IFieldDefinitionNodeParentNode) => (inner: string): string => {
+        const outerFunc = node.type == "child" ? _fnc(node.parent, node) : (p: string) => p;
+        if (start === node) {
+          return outerFunc(inner);
         }
+        return outerFunc(`${node.node.name.value}{
+          ${inner}
+        }`)
+      }
+      return _fnc(node, node)(inner)
+    }*/
+    const getFuncImplMuationGrapghQlFromParent = parentTemplateFunc((node, inner) => {
+        return `${node.node.name.value}{
+    ${inner}
+  }`;
     });
-    return "\n/*\n * -------------------------------------------------------\n * THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)\n * -------------------------------------------------------\n */\n\n/* tslint:disable */\n/* eslint-disable */\n  import { request } from 'graphql-request';\n\n  ".concat(result.definitions.filter(function (p) { return typeof p === "string"; }).join('\n'), "\n  ");
+    const getFuncImplReturnTypeFromRequest = parentTemplateFunc((node, inner) => {
+        return `${node.node.name.value}:{
+    ${inner}
+  }`;
+    });
+    const getFuncImplReturnPath = parentTemplateFunc((node, inner) => {
+        return `${node.node.name.value}.${inner}`;
+    });
+    const getFuncImpl = (item) => {
+        var _a, _b, _c;
+        const node = item.node;
+        return `
+            const document = \`
+        mutation (${(_a = node.arguments) === null || _a === void 0 ? void 0 : _a.map(p => "$" + getFuncImplParameterDefinition(p)).join(',')}) {
+          ${getFuncImplMuationGrapghQlFromParent(item)(`${node.name.value}(${(_b = node.arguments) === null || _b === void 0 ? void 0 : _b.map(p => p.name.value + ":$" + p.name.value).join(',')}) {
+            id
+            errorMessage
+          }`)}
+          }          
+        \`
+        return request<{${getFuncImplReturnTypeFromRequest(item)(`${node.name.value}: ${getType(node.type, item)} `)}}>('${config.url}', document, { ${(_c = node.arguments) === null || _c === void 0 ? void 0 : _c.map(p => p.name.value).join(',')} }).then(p => {
+            const response = p.${getFuncImplReturnPath(item)(node.name.value)};
+            if (response.errorMessage)
+                throw response.errorMessage
+            return response.id
+        }).catch(err => {
+            if (err instanceof Error)
+                console.error(err);
+            else
+                throw err;
+            return ""
+        })`;
+    };
+    const getFieldType = (item) => {
+        if (item.node.arguments !== undefined && item.node.arguments.length > 0)
+            return `(${[...item.node.arguments]
+                .sort((a, b) => b.type.kind.localeCompare(a.type.kind))
+                .map(getInputValueDefinitionNode(item))
+                .join(",")})=>{${getFuncImpl(item)}}`;
+        else
+            return `${getType(item.node.type, item)}`;
+    };
+    const getObjectTypeDefinitionNode = (node, parent) => {
+        var _a;
+        return `{
+      //${node.name.value}
+      ${(_a = node.fields) === null || _a === void 0 ? void 0 : _a.map(node => `${node.name.value}:${getFieldType({ node, parent, type: "child" })}`).join(',\n\t\t\t')}
+    }`;
+    };
+    const getNonNullTypeNode = (node, parent) => {
+        return getType(node.type, parent);
+    };
+    const getNamedTypeNode = (node, parent) => {
+        //kann ein ScalarType, inputtype oder objecttype sein
+        //ScalarType mappen
+        const typeName = node.name.value;
+        if (typeName in typeMap && typeMap[typeName] !== undefined)
+            return typeMap[typeName];
+        //inputTypes werden als interface übersetzt, den namen einfach eintragen
+        if (typeName in inputValueDefinitionNodes && inputValueDefinitionNodes[typeName] !== undefined)
+            return node.name.value;
+        //objectTypes werden inline übersetzt
+        if (typeName in objectTypeDefinitionNodes && objectTypeDefinitionNodes[typeName] !== undefined) {
+            return getObjectTypeDefinitionNode(objectTypeDefinitionNodes[typeName], parent);
+        }
+        return "//unknown ***" + node.name.value + "***";
+    };
+    const getType = (node, parent) => {
+        if (node.kind == graphql_1.Kind.NAMED_TYPE)
+            return getNamedTypeNode(node, parent);
+        if (node.kind == graphql_1.Kind.NON_NULL_TYPE)
+            return getNonNullTypeNode(node, parent);
+        return "";
+    };
+    const getNameWithNullhandling = (node) => {
+        return `${node.name.value}${node.type.kind == graphql_1.Kind.NAMED_TYPE ? "?" : ""}`;
+    };
+    const inputValueDefinitionNodesArr = astNode.definitions
+        .filter((p) => p.kind == graphql_1.Kind.INPUT_OBJECT_TYPE_DEFINITION);
+    const inputValueDefinitionNodes = Object.fromEntries(inputValueDefinitionNodesArr
+        .map(p => [p.name.value, p]));
+    const objectTypeDefinitionNodes = Object.fromEntries(astNode.definitions
+        .filter((p) => p.kind == graphql_1.Kind.OBJECT_TYPE_DEFINITION)
+        .map(p => [p.name.value, p]));
+    const getInputValueDefinitionNode = (parent) => (node) => {
+        return `${getNameWithNullhandling(node)}:${getType(node.type, parent)}`;
+    };
+    const inputValueDefinitionTmpl = inputValueDefinitionNodesArr.map(node => {
+        var _a, _b;
+        return `interface ${node.name.value}{\n\t${(_b = (_a = node.fields) === null || _a === void 0 ? void 0 : _a.map(getInputValueDefinitionNode(fieldDefinitionNodeParentNodeForInput))) === null || _b === void 0 ? void 0 : _b.join(';\n\t')}\n}`;
+    }).join('\n');
+    let mutationTmpl = "";
+    const mutation = astNode.definitions.find(node => { var _a; return "name" in node ? ((_a = node === null || node === void 0 ? void 0 : node.name) === null || _a === void 0 ? void 0 : _a.value) == "Mutation" : false; });
+    if (mutation !== undefined) {
+        mutationTmpl = ((_a = mutation.fields) === null || _a === void 0 ? void 0 : _a.map(node => {
+            return `export const ${node.name.value}= ${getFieldType({ node, type: "root" })}`;
+        }).join('\n')) || "";
+    }
+    return `
+/*
+ * -------------------------------------------------------
+ * THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+ * -------------------------------------------------------
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+  import { request } from 'graphql-request';
+${inputValueDefinitionTmpl}
+  ${mutationTmpl}
+  `;
 };
 exports.plugin = plugin;
 //# sourceMappingURL=index.js.map

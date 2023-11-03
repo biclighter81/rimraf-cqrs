@@ -18,7 +18,7 @@ type ArticleCommands {
 }
 type Mutation {
   article: ArticleCommands
-  articlePriceIncreased(payload: ArticleReadyForSale!):CommandResponse!
+  articlePriceIncreased(payload: ArticleReadyForSale!,article:String):CommandResponse!
 }
 
 type Query {

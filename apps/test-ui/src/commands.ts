@@ -8,63 +8,97 @@
 /* tslint:disable */
 /* eslint-disable */
   import { request } from 'graphql-request';
-
-  export interface ArticleCommands{
-	articleReadyForSale = (payload: ArticleReadyForSale) => {
-            const document = `
-        mutation ($payload: ArticleReadyForSale!) {
-          articleReadyForSale(payload:$payload) {
-              id
-              errorMessage
-            }
-          }          
-        `
-        return request<{ articleReadyForSale: CommandResponse }>('http://localhost:3002/graphql', document, { payload }).then(p => {
-            const response = p.articleReadyForSale;
-            if (response.errorMessage)
-                throw response.errorMessage
-            return response.id
-        }).catch(err => {
-            if (err instanceof Error)
-                console.error(err);
-            else
-                throw err;
-            return ""
-        })
-          };
-	buildArticle = (payload: BuildArticle) => {
-            const document = `
-        mutation ($payload: BuildArticle!) {
-          buildArticle(payload:$payload) {
-              id
-              errorMessage
-            }
-          }          
-        `
-        return request<{ buildArticle: CommandResponse }>('http://localhost:3002/graphql', document, { payload }).then(p => {
-            const response = p.buildArticle;
-            if (response.errorMessage)
-                throw response.errorMessage
-            return response.id
-        }).catch(err => {
-            if (err instanceof Error)
-                console.error(err);
-            else
-                throw err;
-            return ""
-        })
-          }
-}
 interface ArticleReadyForSale{
-	articleId: string;
-	price: number
+	articleId:string;
+	price:number
 }
 interface BuildArticle{
-	name: string
+	name:string
 }
-export interface CommandResponse{
-	errorMessage?: string;
-	id: string
-}
-export const article?: ArticleCommands
+  export const article= {
+      //ArticleCommands
+      articleReadyForSale:(payload:ArticleReadyForSale)=>{
+            const document = `
+        mutation ($payload: ArticleReadyForSale!) {
+          article{
+    articleReadyForSale(payload:$payload) {
+            id
+            errorMessage
+          }
+  }
+          }          
+        `
+        return request<{article:{
+    articleReadyForSale: {
+      //CommandResponse
+      errorMessage:string,
+			id:string
+    } 
+  }}>('http://localhost:3002/graphql', document, { payload }).then(p => {
+            const response = p.article.articleReadyForSale;
+            if (response.errorMessage)
+                throw response.errorMessage
+            return response.id
+        }).catch(err => {
+            if (err instanceof Error)
+                console.error(err);
+            else
+                throw err;
+            return ""
+        })},
+			buildArticle:(payload:BuildArticle)=>{
+            const document = `
+        mutation ($payload: BuildArticle!) {
+          article{
+    buildArticle(payload:$payload) {
+            id
+            errorMessage
+          }
+  }
+          }          
+        `
+        return request<{article:{
+    buildArticle: {
+      //CommandResponse
+      errorMessage:string,
+			id:string
+    } 
+  }}>('http://localhost:3002/graphql', document, { payload }).then(p => {
+            const response = p.article.buildArticle;
+            if (response.errorMessage)
+                throw response.errorMessage
+            return response.id
+        }).catch(err => {
+            if (err instanceof Error)
+                console.error(err);
+            else
+                throw err;
+            return ""
+        })}
+    }
+export const articlePriceIncreased= (payload:ArticleReadyForSale,article?:string)=>{
+            const document = `
+        mutation ($article: String,$payload: ArticleReadyForSale!) {
+          articlePriceIncreased(article:$article,payload:$payload) {
+            id
+            errorMessage
+          }
+          }          
+        `
+        return request<{articlePriceIncreased: {
+      //CommandResponse
+      errorMessage:string,
+			id:string
+    } }>('http://localhost:3002/graphql', document, { article,payload }).then(p => {
+            const response = p.articlePriceIncreased;
+            if (response.errorMessage)
+                throw response.errorMessage
+            return response.id
+        }).catch(err => {
+            if (err instanceof Error)
+                console.error(err);
+            else
+                throw err;
+            return ""
+        })}
   
