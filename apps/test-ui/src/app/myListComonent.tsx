@@ -3,17 +3,16 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { Reducer } from 'rimraf-cqrs-lib';
-import { exampleReducer } from "read-reducer";
-import { request } from 'graphql-request'
-import { createExample, deleteExample, setExampleText } from "@/commands";
+import { articleOverviewReducer } from "read-reducer";
+import { article } from "@/commands";
 
 const createUseReadModel = (url: string) => <T extends any[],>(listName: string, aggReducer: Reducer<any, T>) => {
     const [state, setState] = useState<T>([] as any)
 
     useEffect(() => {
-        const socket = io("http://localhost:4000/" + listName);
-
-        socket.on("event", (event) => {
+        const socket = io(url + listName);
+        /////////////////////////todo article
+        socket.on("Article", (event) => {
             setState(currentState => {
                 const reducer = aggReducer[event.eventName];
                 if (reducer !== undefined) {
@@ -24,7 +23,7 @@ const createUseReadModel = (url: string) => <T extends any[],>(listName: string,
             })
         })
 
-        socket.on("initState", (initState) => {
+        socket.on("__init", (initState) => {
             setState(initState)
         })
         return () => {
@@ -34,14 +33,14 @@ const createUseReadModel = (url: string) => <T extends any[],>(listName: string,
     return state;
 }
 
-const useReadModel = createUseReadModel("http://localhost:4000/")
+const useReadModel = createUseReadModel("http://localhost:4001/")
 export default function MyListComponent() {
-    const mylist = useReadModel("MyList", exampleReducer)
+    const mylist = useReadModel("articleOverview", articleOverviewReducer)
     const [state, setState] = useState({ name: "sty", editId: "", editText: "" });
 
     const add = async () => {
         try {
-            await createExample({ name: state.name });
+            await article.buildArticle({ name: state.name });
         }
         catch (err) {
             debugger;
@@ -51,7 +50,7 @@ export default function MyListComponent() {
 
     const save = async () => {
         try {
-            await setExampleText({ text: state.editText, id: state.editId });
+            //await setExampleText({ text: state.editText, id: state.editId });
             setState({ ...state, editId: "", editText: "" })
         }
         catch (err) {
@@ -62,7 +61,7 @@ export default function MyListComponent() {
 
     const del = async () => {
         try {
-            await deleteExample({ id: state.editId });
+            //await deleteExample({ id: state.editId });
         }
         catch (err) {
             debugger;
@@ -73,15 +72,15 @@ export default function MyListComponent() {
     return (<div>
         <input value={state.name} onChange={(e) => setState({ ...state, name: e.target.value })} />
         <button onClick={() => { add() }}> add me</button>
-        {mylist.map(p => <div key={p.ExampleId} onClick={() => setState({ ...state, editId: p.ExampleId, editText: p.name })}>
-            <span className=" text-xs mr-4">{p.ExampleId}</span>
-            {state.editId == p.ExampleId ?
+        {mylist.map(p => <div key={p.articleId} onClick={() => setState({ ...state, editId: p.articleId, editText: p.Name })}>
+            <span className=" text-xs mr-4">{p.articleId}</span>
+            {state.editId == p.articleId ?
                 <>
                     <input value={state.editText} onChange={(e) => setState({ ...state, editText: e.target.value })} />
                     <button className="m-2" onClick={() => { save() }}> save</button>
                     <button onClick={() => { del() }}> del</button>
                 </> :
-                <span className=" text-xl">{p.name}</span>
+                <span className=" text-xl">{p.Name}</span>
 
             }
 

@@ -1,4 +1,3 @@
-import ListConsole from "./ListConsole";
 import MyListComponent from "./myListComonent";
 
 
@@ -8,8 +7,6 @@ export default function Home() {
       <h1>Hallo Welt</h1>
       <div className=" grid grid-cols-2 gap-4">
         <MyListComponent/>
-        <ListConsole listName="MyList"></ListConsole>
-
       </div>
     </main>
   )

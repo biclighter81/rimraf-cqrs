@@ -34,7 +34,7 @@ interface BuildArticle{
       errorMessage:string,
 			id:string
     } 
-  }}>('http://localhost:3002/graphql', document, { payload }).then(p => {
+  }}>('http://localhost:4000/graphql', document, { payload }).then(p => {
             const response = p.article.articleReadyForSale;
             if (response.errorMessage)
                 throw response.errorMessage
@@ -63,7 +63,7 @@ interface BuildArticle{
       errorMessage:string,
 			id:string
     } 
-  }}>('http://localhost:3002/graphql', document, { payload }).then(p => {
+  }}>('http://localhost:4000/graphql', document, { payload }).then(p => {
             const response = p.article.buildArticle;
             if (response.errorMessage)
                 throw response.errorMessage
@@ -76,29 +76,4 @@ interface BuildArticle{
             return ""
         })}
     }
-export const articlePriceIncreased= (payload:ArticleReadyForSale,article?:string)=>{
-            const document = `
-        mutation ($article: String,$payload: ArticleReadyForSale!) {
-          articlePriceIncreased(article:$article,payload:$payload) {
-            id
-            errorMessage
-          }
-          }          
-        `
-        return request<{articlePriceIncreased: {
-      //CommandResponse
-      errorMessage:string,
-			id:string
-    } }>('http://localhost:3002/graphql', document, { article,payload }).then(p => {
-            const response = p.articlePriceIncreased;
-            if (response.errorMessage)
-                throw response.errorMessage
-            return response.id
-        }).catch(err => {
-            if (err instanceof Error)
-                console.error(err);
-            else
-                throw err;
-            return ""
-        })}
   

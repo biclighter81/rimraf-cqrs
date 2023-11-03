@@ -4,14 +4,16 @@ import { Server } from "socket.io";
 import Debug from "debug";
 import { Projection, ProjectionMediator } from ".";
 import * as express from "express";
+
 export const getProjectionServer = <TAppEventBus>(
     port: number,
     rabbitServer: RabbitMqConnection,
     projections: Projection<TAppEventBus>[]
 ) => {
     const expressApp = express();
+    //expressApp.use(cors())
     const server = http.createServer(expressApp);
-    const io = new Server(server);
+    const io = new Server(server, {cors: {origin: '*',methods: ["GET", "POST"]}});
 
     const logger = Debug("read-model");
 

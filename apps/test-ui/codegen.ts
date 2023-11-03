@@ -5,7 +5,7 @@ const config: CodegenConfig = {
   generates: {
     "./src/commands.ts": {
       plugins: ['codegen-graphql-mutations'],
-      config: { url: "http://localhost:3002/graphql" }
+      config: { url: "http://localhost:4000/graphql" }
     },
   },
   ignoreNoDocuments: true

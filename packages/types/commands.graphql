@@ -18,7 +18,6 @@ type ArticleCommands {
 }
 type Mutation {
   article: ArticleCommands
-  articlePriceIncreased(payload: ArticleReadyForSale!,article:String):CommandResponse!
 }
 
 type Query {
