@@ -6,6 +6,8 @@ export interface Article {
   articleId: string
   name: string
   price: number
+
+  active:boolean
 }
 
 export interface ArticleEvents {

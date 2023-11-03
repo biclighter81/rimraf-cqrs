@@ -21,6 +21,8 @@ export type ArticleCommands = {
   __typename?: 'ArticleCommands';
   articleReadyForSale: CommandResponse;
   buildArticle: CommandResponse;
+  changePrice: CommandResponse;
+  disable: CommandResponse;
 };
 
 
@@ -31,6 +33,17 @@ export type ArticleCommandsArticleReadyForSaleArgs = {
 
 export type ArticleCommandsBuildArticleArgs = {
   payload: BuildArticle;
+};
+
+
+export type ArticleCommandsChangePriceArgs = {
+  articleId: Scalars['ID']['input'];
+  newPrice: Scalars['Int']['input'];
+};
+
+
+export type ArticleCommandsDisableArgs = {
+  articleId: Scalars['ID']['input'];
 };
 
 export type ArticleReadyForSale = {
@@ -51,12 +64,6 @@ export type CommandResponse = {
 export type Mutation = {
   __typename?: 'Mutation';
   article?: Maybe<ArticleCommands>;
-  articlePriceIncreased: CommandResponse;
-};
-
-
-export type MutationArticlePriceIncreasedArgs = {
-  payload: ArticleReadyForSale;
 };
 
 export type Query = {
@@ -165,6 +172,8 @@ export type ResolversParentTypes = ResolversObject<{
 export type ArticleCommandsResolvers<ContextType = GraphQlContext, ParentType extends ResolversParentTypes['ArticleCommands'] = ResolversParentTypes['ArticleCommands']> = ResolversObject<{
   articleReadyForSale?: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<ArticleCommandsArticleReadyForSaleArgs, 'payload'>>;
   buildArticle?: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<ArticleCommandsBuildArticleArgs, 'payload'>>;
+  changePrice?: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<ArticleCommandsChangePriceArgs, 'articleId' | 'newPrice'>>;
+  disable?: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<ArticleCommandsDisableArgs, 'articleId'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -176,7 +185,6 @@ export type CommandResponseResolvers<ContextType = GraphQlContext, ParentType ex
 
 export type MutationResolvers<ContextType = GraphQlContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   article?: Resolver<Maybe<ResolversTypes['ArticleCommands']>, ParentType, ContextType>;
-  articlePriceIncreased?: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<MutationArticlePriceIncreasedArgs, 'payload'>>;
 }>;
 
 export type QueryResolvers<ContextType = GraphQlContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{

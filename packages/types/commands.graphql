@@ -15,6 +15,8 @@ input ArticleReadyForSale {
 type ArticleCommands {
   buildArticle(payload: BuildArticle!): CommandResponse!
   articleReadyForSale(payload: ArticleReadyForSale!): CommandResponse!
+  changePrice(articleId:ID!,newPrice:Int!):CommandResponse!
+  disable(articleId:ID!):CommandResponse!
 }
 type Mutation {
   article: ArticleCommands
