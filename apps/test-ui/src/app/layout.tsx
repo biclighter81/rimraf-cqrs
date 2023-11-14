@@ -1,6 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import Link from 'next/link'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -14,9 +15,28 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const navItems = [{
+    name: 'Order',
+    href: '/'
+  }, {
+    name: 'Article',
+    href: '/article'
+  }]
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+      <div className="w-full h-12 flex items-center px-12">
+        <div>
+          <h1>rimraf cqrs</h1>
+        </div>
+        <div className="flex-grow flex space-x-4 justify-end">
+          {navItems.map((i) => (
+            <Link href={i.href} key={i.name}>
+              <p>{i.name}</p></Link>
+          ))}
+        </div>
+      </div>
+        {children}</body>
     </html>
   )
 }

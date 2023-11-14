@@ -3,6 +3,7 @@ import Debug from "debug";
 import { Namespace, Server } from "socket.io";
 import { ConsumerNamespaceFunction, RabbitMqConnection } from "rimraf-rabbitmq";
 import { Projection } from ".";
+import { DomainEvent } from "../types";
 
 interface ProjectionMediatorEntry<TAppEventBus> extends Projection<TAppEventBus> {
     webSocket: Namespace;
@@ -44,14 +45,13 @@ export class ProjectionMediator<TAppEventBus> {
     private workerQueue(
         propjectionConsumer: ConsumerNamespaceFunction<unknown>,
         projection: ProjectionMediatorEntry<TAppEventBus>,
-        aggName: string
+        aggName: (keyof TAppEventBus) & string
     ) {
         propjectionConsumer(aggName, async (event) => {
-            //const eventHandler = this.getProjectionEventHandler(projection, aggName, event);
             const eventHandler = projection.aggHandler[aggName];
             if (eventHandler != undefined) {
                 projection.logger("workerQueue 💾 to %s for event %s", aggName, event.eventName);
-                return eventHandler(event);
+                return eventHandler(event as any);
             }
             return Promise.resolve()
         });

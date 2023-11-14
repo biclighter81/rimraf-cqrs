@@ -11,7 +11,7 @@ export const databaseRepository = <TEventsbus>(dao: IDao) =>
         return {
             save: (eventName, payload) => {
                 const aggId = idAccessor(payload, eventName);
-                if(!(aggId && aggId.length>0))
+                if (!(aggId && aggId.length > 0))
                     throw "aggId is missing";
 
                 const insertEvent = {
@@ -28,7 +28,7 @@ export const databaseRepository = <TEventsbus>(dao: IDao) =>
                 if (!events?.length) return undefined;
                 let state: any = {};
                 for (const event of events) {
-                    const eventFunc = (reducer[event.eventName]);
+                    const eventFunc = (reducer as any)[event.eventName];
                     if (eventFunc !== undefined)
                         state = eventFunc(event.payload, state);
                 }
@@ -37,37 +37,5 @@ export const databaseRepository = <TEventsbus>(dao: IDao) =>
 
         }
     }
-// class DatabaseRepository<TEventDef, TAgg> implements IAggregatRepository<TEventDef, TAgg>{
-//     constructor(
-//         private reducer: Reducer<TEventDef, TAgg>,
-//         private aggName: string,
-//         private idAccessor: (payload: TEventDef[keyof TEventDef], eventName: string) => string,
-//         private dao: IDao
-//     ) { }
-//     async save<K extends keyof TEventDef>(eventName: K & string, payload: TEventDef[K]): Promise<void> {
 
-//         const id = this.idAccessor(payload, eventName);
-
-//         const event = {
-//             payload,
-//             eventName,
-//             timestamp: new Date().getTime(),
-//             id,
-//         };
-
-//         await this.dao.insertEvent(event, this.aggName);
-//     }
-//     async getState(id: string): Promise<Readonly<TAgg> | null> {
-//         const events = await this.dao.load(id, this.aggName);
-//         if (!events?.length) return null;
-//         let state: any = {};
-//         for (const event of events) {
-//             const eventFunc = (this.reducer[event.eventName]);
-//             if (eventFunc !== undefined)
-//                 state = eventFunc(event, state);
-//         }
-//         return state;
-//     }
-
-// }
 

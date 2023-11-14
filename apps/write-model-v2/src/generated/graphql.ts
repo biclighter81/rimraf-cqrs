@@ -20,7 +20,9 @@ export type Scalars = {
 export type ArticleCommands = {
   __typename?: 'ArticleCommands';
   articleReadyForSale: CommandResponse;
+  assignManufacturer: CommandResponse;
   buildArticle: CommandResponse;
+  changeArticleName: CommandResponse;
   changePrice: CommandResponse;
   disable: CommandResponse;
 };
@@ -31,8 +33,19 @@ export type ArticleCommandsArticleReadyForSaleArgs = {
 };
 
 
+export type ArticleCommandsAssignManufacturerArgs = {
+  articleId: Scalars['String']['input'];
+  manufacturerId: Scalars['String']['input'];
+};
+
+
 export type ArticleCommandsBuildArticleArgs = {
   payload: BuildArticle;
+};
+
+
+export type ArticleCommandsChangeArticleNameArgs = {
+  payload: ChangeArticleName;
 };
 
 
@@ -55,15 +68,38 @@ export type BuildArticle = {
   name: Scalars['String']['input'];
 };
 
+export type ChangeArticleName = {
+  id: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+};
+
 export type CommandResponse = {
   __typename?: 'CommandResponse';
   errorMessage?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
 };
 
+export type ManufacturerCommands = {
+  __typename?: 'ManufacturerCommands';
+  changeName: CommandResponse;
+  createManufactor: CommandResponse;
+};
+
+
+export type ManufacturerCommandsChangeNameArgs = {
+  manufactorId: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+};
+
+
+export type ManufacturerCommandsCreateManufactorArgs = {
+  name: Scalars['String']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   article?: Maybe<ArticleCommands>;
+  manufacturer?: Maybe<ManufacturerCommands>;
 };
 
 export type Query = {
@@ -147,9 +183,11 @@ export type ResolversTypes = ResolversObject<{
   ArticleReadyForSale: ArticleReadyForSale;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   BuildArticle: BuildArticle;
+  ChangeArticleName: ChangeArticleName;
   CommandResponse: ResolverTypeWrapper<CommandResponse>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  ManufacturerCommands: ResolverTypeWrapper<ManufacturerCommands>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -161,9 +199,11 @@ export type ResolversParentTypes = ResolversObject<{
   ArticleReadyForSale: ArticleReadyForSale;
   Boolean: Scalars['Boolean']['output'];
   BuildArticle: BuildArticle;
+  ChangeArticleName: ChangeArticleName;
   CommandResponse: CommandResponse;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
+  ManufacturerCommands: ManufacturerCommands;
   Mutation: {};
   Query: {};
   String: Scalars['String']['output'];
@@ -171,7 +211,9 @@ export type ResolversParentTypes = ResolversObject<{
 
 export type ArticleCommandsResolvers<ContextType = GraphQlContext, ParentType extends ResolversParentTypes['ArticleCommands'] = ResolversParentTypes['ArticleCommands']> = ResolversObject<{
   articleReadyForSale?: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<ArticleCommandsArticleReadyForSaleArgs, 'payload'>>;
+  assignManufacturer?: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<ArticleCommandsAssignManufacturerArgs, 'articleId' | 'manufacturerId'>>;
   buildArticle?: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<ArticleCommandsBuildArticleArgs, 'payload'>>;
+  changeArticleName?: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<ArticleCommandsChangeArticleNameArgs, 'payload'>>;
   changePrice?: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<ArticleCommandsChangePriceArgs, 'articleId' | 'newPrice'>>;
   disable?: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<ArticleCommandsDisableArgs, 'articleId'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -183,8 +225,15 @@ export type CommandResponseResolvers<ContextType = GraphQlContext, ParentType ex
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type ManufacturerCommandsResolvers<ContextType = GraphQlContext, ParentType extends ResolversParentTypes['ManufacturerCommands'] = ResolversParentTypes['ManufacturerCommands']> = ResolversObject<{
+  changeName?: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<ManufacturerCommandsChangeNameArgs, 'manufactorId' | 'name'>>;
+  createManufactor?: Resolver<ResolversTypes['CommandResponse'], ParentType, ContextType, RequireFields<ManufacturerCommandsCreateManufactorArgs, 'name'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type MutationResolvers<ContextType = GraphQlContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   article?: Resolver<Maybe<ResolversTypes['ArticleCommands']>, ParentType, ContextType>;
+  manufacturer?: Resolver<Maybe<ResolversTypes['ManufacturerCommands']>, ParentType, ContextType>;
 }>;
 
 export type QueryResolvers<ContextType = GraphQlContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
@@ -194,6 +243,7 @@ export type QueryResolvers<ContextType = GraphQlContext, ParentType extends Reso
 export type Resolvers<ContextType = GraphQlContext> = ResolversObject<{
   ArticleCommands?: ArticleCommandsResolvers<ContextType>;
   CommandResponse?: CommandResponseResolvers<ContextType>;
+  ManufacturerCommands?: ManufacturerCommandsResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
 }>;

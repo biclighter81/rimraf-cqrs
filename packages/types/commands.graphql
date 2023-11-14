@@ -17,9 +17,23 @@ type ArticleCommands {
   articleReadyForSale(payload: ArticleReadyForSale!): CommandResponse!
   changePrice(articleId:ID!,newPrice:Int!):CommandResponse!
   disable(articleId:ID!):CommandResponse!
+  changeArticleName(payload: ChangeArticleName!): CommandResponse!
+  assignManufacturer(articleId: String!, manufacturerId: String!): CommandResponse!
 }
+
+type ManufacturerCommands {
+  createManufactor(name:String!): CommandResponse!
+  changeName(manufactorId: String!, name: String!): CommandResponse!
+}
+
 type Mutation {
   article: ArticleCommands
+  manufacturer: ManufacturerCommands
+}
+
+input ChangeArticleName {
+  name: String!
+  id: String!
 }
 
 type Query {

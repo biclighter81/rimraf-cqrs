@@ -1,6 +1,7 @@
 import { getMutation } from "rimraf-cqrs-lib"
 import { ArticleCommands } from "./Aggregates/article"
 import { MutationResolvers, Resolvers } from "./generated/graphql"
+import { ManufacturerCommands } from "./Aggregates/manufactor";
 
 const mutationResolvers: MutationResolvers = {
     articlePriceIncreased: async (_, param, context) => {
@@ -18,7 +19,8 @@ export const getResolvers = () => {
             healthCheck: () => "Ok"
         },
         Mutation: getMutation<MutationResolvers>(mutationResolvers),
-        ArticleCommands: ArticleCommands
+        ArticleCommands: ArticleCommands,
+        ManufacturerCommands: ManufacturerCommands
     }
     return resolvers;
 }

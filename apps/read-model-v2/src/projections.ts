@@ -1,7 +1,6 @@
 import { MongoClient } from "mongodb";
 import { articleOverviewReducer } from "read-reducer";
 import { propjectionFactory } from "rimraf-cqrs-lib";
-import { getRabbitMqConnection } from "rimraf-rabbitmq";
 import { AppEventBus } from "types";
 
 const mongodb = async () => {

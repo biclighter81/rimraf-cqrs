@@ -9,21 +9,21 @@ export class CommonMongoProjection<TAppEventBus> implements Projection<TAppEvent
 
     public addReducer<P extends keyof TAppEventBus, TDto extends Document>(
         aggName: P,
-        aggReducer: Reducer<TAppEventBus[P], TDto>,
+        aggReducer: Reducer<TAppEventBus[P], TDto[]>,
         dtoField: keyof (TDto extends (infer U)[] ? U : TDto)
     ) {
-        const aggHandler: IEventHandler<any, Promise<void>> = async (event) => {
+        const aggHandler: IEventHandler<TAppEventBus[P], Promise<void>> = async (event) => {
 
             const collection = this.database.collection<TDto>(this.listName);
 
-            const currentStateList = (await collection.find({ [dtoField]: event.aggId } as any).toArray());
-            const reducer = aggReducer[event.eventName as any];
+            const currentStateList = (await collection.find({ [dtoField]: event.aggId } as any).toArray()) as TDto[];
+            const reducer = aggReducer[event.eventName];
             if (reducer !== undefined) {
                 const newStateList = reducer(event.payload, currentStateList || []);
 
                 for (const newState of newStateList) {
                     if (newState._id === undefined)
-                        await collection.insertOne(newState);
+                        await collection.insertOne(newState as any);
                     else {
                         const oldItem = currentStateList.find(p => p._id == newState._id)
                         if (oldItem === undefined)
